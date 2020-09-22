@@ -49,6 +49,7 @@ Thumbs.db
 *.wmv
 
 # GHDL build, simulation and waves
+verification/tb_bb_modulator/tb_bb_modulator
 verification/*/*.o
 verification/*/*.fst
 verification/*/*.cf
