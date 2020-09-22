@@ -48,3 +48,8 @@ Thumbs.db
 *.mov
 *.wmv
 
+# GHDL build, simulation and waves
+verification/*/*.o
+verification/*/*.fst
+verification/*/*.cf
+
