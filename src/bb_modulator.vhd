@@ -20,6 +20,9 @@ entity bb_modulator is
     os_dv_o       : out std_logic;
     os_rfd_i      : in  std_logic;
     -- Control and report IOs
+    n_bytes_i     : in  std_logic_vector(7 downto 0);
+    n_pre_i       : in  std_logic_vector(7 downto 0);
+    n_sfd_i       : in  std_logic_vector(7 downto 0);
     send_i        : in  std_logic;
     tx_rdy_o      : out std_logic
   );
@@ -27,6 +30,27 @@ end entity bb_modulator;
 
 -- architecture
 architecture rtl of bb_modulator is
+  component mod_control_unit is
+    generic(
+      N_PULSE : integer
+     );
+    port(
+      -- clk, en, rst
+      clk_i      : in  std_logic;
+      en_i       : in  std_logic;
+      srst_i     : in  std_logic;
+      -- Input signals
+      n_bytes_i  : in  std_logic_vector(7 downto 0);
+      n_pre_i    : in  std_logic_vector(7 downto 0);
+      n_sfd_i    : in  std_logic_vector(7 downto 0);
+      send_i     : in  std_logic;
+      -- Output signals
+      bit_sel_o  : out  std_logic;
+      data_sel_o : out  std_logic;
+      zero_out_o : out  std_logic;
+      tx_rdy_o   : out  std_logic
+    );
+  end component;
 
 --  -- components
 --  component adder_N is
@@ -42,14 +66,16 @@ architecture rtl of bb_modulator is
 --    );
 --  end component adder_N;
 --
---  -- signals
---  signal adder_output_s    : std_logic_vector(3 downto 0);
---  signal mux_output_s      : std_logic_vector(3 downto 0);
---  signal ext_mux_output_s  : std_logic_vector(5 downto 0);
---  signal acc_s             : std_logic_vector(6 downto 0);
---  signal sum_s             : std_logic_vector(6 downto 0);
+
+  -- signals
+  --  signal sum_s             : std_logic_vector(6 downto 0);
+  signal bit_sel_s  : std_logic;
+  signal data_sel_s : std_logic;
+  signal zero_out_s : std_logic;
 
 begin
+
+  tx_rdy_o <= '1';
 
 --  u_input_adder : adder_N
 --  generic map
@@ -99,6 +125,28 @@ begin
 --  overflow_o <= acc_s(6);
 --
 --  reg_out_o <= acc_s(5 downto 0);
+
+
+  u_cu : mod_control_unit
+  generic map (
+    N_PULSE => 16
+  )
+  port map (
+    -- clk, en, rst
+    clk_i      => clk_i,
+    en_i       => en_i,
+    srst_i     => srst_i,
+    -- Input signals
+    n_bytes_i  => n_bytes_i,
+    n_pre_i    => n_pre_i,
+    n_sfd_i    => n_sfd_i,
+    send_i     => send_i,
+    -- Output signals
+    bit_sel_o  => bit_sel_s,
+    data_sel_o => data_sel_s,
+    zero_out_o => zero_out_s,
+    tx_rdy_o   => tx_rdy_o
+  );
 
 end architecture rtl;
 
