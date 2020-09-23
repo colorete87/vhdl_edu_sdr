@@ -10,3 +10,9 @@ design_symb_sync_filters:
 	@cd coeffs_generators && octave design_symb_sync_filters.m
 	@echo "Done!"
 
+.PHONY: generate_vhdl_for_pulse_filter
+generate_vhdl_for_pulse_filter:
+	@echo "Generating VHDL code for Pulse-Shaping filter!"
+	@cd hdlcoder && matlab -nodesktop -nosplash -r "run generate_vhdl_for_pulse_filter.m; exit"
+	@cp hdlcoder/hdlsrc/hdlcoder_pulse_shaping_fir.vhd ../src/
+	@echo "Done!"

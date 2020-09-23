@@ -9,19 +9,23 @@ entity mod_control_unit is
    );
   port(
     -- clk, en, rst
-    clk_i      : in  std_logic;
-    en_i       : in  std_logic;
-    srst_i     : in  std_logic;
+    clk_i           : in  std_logic;
+    en_i            : in  std_logic;
+    srst_i          : in  std_logic;
     -- Input signals
-    n_bytes_i  : in  std_logic_vector(7 downto 0);
-    n_pre_i    : in  std_logic_vector(7 downto 0);
-    n_sfd_i    : in  std_logic_vector(7 downto 0);
-    send_i     : in  std_logic;
+    nm1_bytes_i     : in  std_logic_vector(7 downto 0);
+    nm1_pre_i       : in  std_logic_vector(7 downto 0);
+    nm1_sfd_i       : in  std_logic_vector(7 downto 0);
+    send_i          : in  std_logic;
+    is_dv_i         : in  std_logic;
+    map_is_rfd_i    : in  std_logic;
     -- Output signals
-    bit_sel_o  : out  std_logic;
-    data_sel_o : out  std_logic;
-    zero_out_o : out  std_logic;
-    tx_rdy_o   : out  std_logic
+    data_symb_sel_o : out std_logic_vector(2 downto 0);
+    out_symb_sel_o  : out std_logic_vector(1 downto 0);
+    zero_out_o      : out std_logic;
+    bbm_is_rfd_o    : out std_logic;
+    input_reg_en_o  : out std_logic;
+    tx_rdy_o        : out std_logic
   );
 end entity;
 
@@ -35,18 +39,24 @@ architecture rtl of mod_control_unit is
   signal next_state_s : state_type;
 
   -- Signals
-  signal send_d1_s      : std_logic;
-  signal start_tx_s     : std_logic;
-  signal counter_s      : std_logic_vector(7 downto 0);
-  signal counter_srst_s : std_logic;
+  signal send_d1_s              : std_logic;
+  signal start_tx_s             : std_logic;
+  signal counter_s              : std_logic_vector(7+3 downto 0);
+  signal counter_srst_s         : std_logic;
+  signal internal_enable_s      : std_logic;
+  signal bbm_is_rfd_s           : std_logic;
+
 
 begin
+
+  -- Input Stream
+  bbm_is_rfd_o <= bbm_is_rfd_s;
 
   -- Flank detector for send_i
   process (clk_i)
   begin
     if (rising_edge(clk_i)) then
-      if counter_srst_s = '1' then
+      if srst_i = '1' then
         send_d1_s <= '0';
       else
         if en_i = '1' then
@@ -63,27 +73,38 @@ begin
   -- Counter reset
   counter_srst_s <= '1' when state_s = S_INIT else
                     '1' when state_s = S_WAIT else
-                    '1' when state_s = S_PRE  and counter_s = n_pre_i else
-                    '1' when state_s = S_SFD  and counter_s = n_sfd_i else
-                    '1' when state_s = S_DATA and counter_s = n_sfd_i else
+                    '1' when state_s = S_PRE  and counter_s = "000"&nm1_pre_i   and internal_enable_s = '1' else
+                    '1' when state_s = S_SFD  and counter_s = "000"&nm1_sfd_i   and internal_enable_s = '1' else
+                    '1' when state_s = S_DATA and counter_s = nm1_bytes_i&"111" and internal_enable_s = '1' else
                     '0';
+
+  -- Internal Enable
+  u_internal_enable :
+  internal_enable_s <= en_i and is_dv_i and map_is_rfd_i;
+
+  -- Input register enable
+  u_input_reg_en :
+  input_reg_en_o <= bbm_is_rfd_s and is_dv_i;
 
   -- Counter
   process (clk_i)
     variable counter_v : integer;
+    constant MAX       : integer := 255;
   begin
     if (rising_edge(clk_i)) then
-      if counter_srst_s = '1' then
+      if srst_i = '1' then
+        counter_v := 0;
+      elsif counter_srst_s = '1' then
         counter_v := 0;
       else
-        if en_i = '1' then
+        if internal_enable_s = '1' then
           counter_v := counter_v + 1;
-          if counter_v >= 256 then
+          if counter_v > MAX then
             counter_v := 0;
           end if;
         end if;
       end if;
-      counter_s <= std_logic_vector(to_unsigned(counter_v,8));
+      counter_s <= std_logic_vector(to_unsigned(counter_v,11));
     end if;
   end process;
 
@@ -101,7 +122,7 @@ begin
     end if;
   end process;
 
-  -- Next State combinational logic
+  -- Next State Combinational Logic
   process (state_s,start_tx_s,counter_srst_s)
   begin
     case state_s is
@@ -136,17 +157,37 @@ begin
     end case;
   end process;
   
-  -- Output depends solely on the current state
-  process (state_s)
+  -- Output Logic (Combinational Logic)
+  -- which is only function of the state
+  tx_rdy_o <= '1' when state_s = S_WAIT else '0';
+  zero_out_o <= '0' when state_s = S_DATA or
+                         state_s = S_PRE  or
+                         state_s = S_SFD  else '1';
+
+  process (state_s,en_i,counter_s,counter_srst_s,map_is_rfd_i,internal_enable_s,nm1_sfd_i)
   begin
+    bbm_is_rfd_s   <= '0';
     case state_s is
       when S_INIT =>
       when S_WAIT =>
       when S_PRE =>
       when S_SFD =>
+        if counter_s(7 downto 0) = nm1_sfd_i then
+          bbm_is_rfd_s <=  en_i and map_is_rfd_i and internal_enable_s;
+        end if;
       when S_DATA =>
+        if counter_s(2 downto 0) = "111" then
+          bbm_is_rfd_s <= en_i and map_is_rfd_i and internal_enable_s;
+        end if;
       when others =>
     end case;
   end process;
+
+  -- Muxes selection
+  data_symb_sel_o <= counter_s(2 downto 0);
+  out_symb_sel_o <= '0' & counter_s(0)      when state_s = S_PRE else
+                    '0' & not(counter_s(0)) when state_s = S_SFD else
+                    "10"                    when state_s = S_DATA else
+                    "00";
   
 end rtl;

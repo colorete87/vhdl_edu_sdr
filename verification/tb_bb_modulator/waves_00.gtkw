@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.3.102 (w)1999-2019 BSI
-[*] Tue Sep 22 17:59:29 2020
+[*] Wed Sep 23 04:53:32 2020
 [*]
 [dumpfile] "/home/fzacchigna/fpga/proyects/vhdl_edu_bbt/verification/tb_bb_modulator/waves.fst"
-[dumpfile_mtime] "Tue Sep 22 17:59:09 2020"
-[dumpfile_size] 1240
+[dumpfile_mtime] "Wed Sep 23 04:53:19 2020"
+[dumpfile_size] 3138
 [savefile] "/home/fzacchigna/fpga/proyects/vhdl_edu_bbt/verification/tb_bb_modulator/waves_00.gtkw"
 [timestart] 0
 [size] 1920 1016
 [pos] -1 -1
-*-34.000000 15500000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-34.000000 13375000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] dut.
 [sst_width] 404
 [signals_width] 291
@@ -22,13 +22,11 @@ tb_dut_clk_i
 tb_dut_en_i
 tb_dut_srst_i
 @200
--
 -Control and status
 @28
 tb_dut_send_i
 tb_dut_tx_rdy_o
 @200
--
 -Input Stream
 @22
 tb_dut_is_data_i[7:0]
@@ -36,7 +34,6 @@ tb_dut_is_data_i[7:0]
 tb_dut_is_dv_i
 tb_dut_is_rfd_o
 @200
--
 -Output Stream
 @22
 tb_dut_os_data_o[9:0]
@@ -47,37 +44,6 @@ tb_dut_os_rfd_i
 -TB Signals
 @200
 -
-@c00200
--bb_modulator
-@28
-dut.clk_i
-dut.en_i
-dut.srst_i
-@200
--
--Control and status
-@28
-dut.send_i
-dut.tx_rdy_o
-@200
--
--Input Stream
-@22
-dut.is_data_i[7:0]
-@28
-dut.is_dv_i
-dut.is_rfd_o
-@200
--
--Output Stream
-@22
-dut.os_data_o[9:0]
-@28
-dut.os_dv_o
-dut.os_rfd_i
-@1401200
--bb_modulator
-@200
 -
 @800200
 -Control Unit
@@ -86,31 +52,24 @@ dut.u_cu.clk_i
 dut.u_cu.en_i
 dut.u_cu.srst_i
 @200
--
+-Config
+@22
+dut.u_cu.nm1_bytes_i[7:0]
+dut.u_cu.nm1_pre_i[7:0]
+dut.u_cu.nm1_sfd_i[7:0]
+@200
 -States
-@29
-dut.u_cu.state_s
 @28
 dut.u_cu.next_state_s
+dut.u_cu.state_s
 @200
--
--Config
-@24
-dut.u_cu.n_bytes_i[7:0]
-dut.u_cu.n_pre_i[7:0]
-dut.u_cu.n_sfd_i[7:0]
-@200
--
 -Input Signals
 @28
 dut.u_cu.send_i
 @200
--
 -Output Signals
 @28
 dut.u_cu.tx_rdy_o
-dut.u_cu.bit_sel_o
-dut.u_cu.data_sel_o
 dut.u_cu.zero_out_o
 @200
 -
@@ -119,15 +78,168 @@ dut.u_cu.zero_out_o
 dut.u_cu.send_d1_s
 dut.u_cu.send_i
 dut.u_cu.start_tx_s
-@24
-dut.u_cu.counter_s[7:0]
-@8024
-dut.u_cu.counter_s[7:0]
+@200
+-counter_s[7:0]
+-counter_s[7:0]
 @20000
 -
 @28
 dut.u_cu.counter_srst_s
 @1000200
 -Control Unit
+@200
+-
+@28
+dut.clk_i
+[color] 1
+dut.u_cu.state_s
+[color] 7
+dut.u_cu.counter_srst_s
+[color] 7
+dut.u_cu.counter_s[10:0]
+@23
+[color] 7
+dut.u_cu.counter_s[10:0]
+@24
+[color] 7
+dut.u_cu.counter_s[10:0]
+@8024
+[color] 7
+dut.u_cu.counter_s[10:0]
+@20000
+-
+@28
+dut.u_cu.start_tx_s
+@22
+dut.is_data_i[7:0]
+@24
+dut.is_data_i[7:0]
+@20000
+-
+@24
+dut.bit_sel_s[2:0]
+@c08024
+dut.bit_sel_s[2:0]
+@28
+(0)dut.bit_sel_s[2:0]
+(1)dut.bit_sel_s[2:0]
+(2)dut.bit_sel_s[2:0]
+@1401200
+-group_end
+@20000
+-
+@24
+dut.data_sel_s[1:0]
+@8024
+dut.data_sel_s[1:0]
+@20000
+-
+@200
+-
+@28
+[color] 3
+dut.zero_out_s
+@200
+-
+@20000
+-
+@c00200
+-u_mapper
+@28
+dut.u_mapper.clk_i
+dut.u_mapper.en_i
+dut.u_mapper.srst_i
+@200
+-Internal Control
+@28
+[color] 3
+dut.u_mapper.internal_enable_s
+@200
+-Input Stream
+@28
+[color] 5
+dut.u_mapper.is_dv_i
+[color] 5
+dut.u_mapper.is_rfd_o
+[color] 5
+dut.u_mapper.is_symb_i
+[color] 5
+dut.u_mapper.is_zero_out_i
+@200
+-Output Stream
+@28
+[color] 6
+dut.u_mapper.os_dv_o
+[color] 6
+dut.u_mapper.os_mdata_o[1:0]
+@420
+[color] 6
+dut.u_mapper.os_mdata_o[1:0]
+@8420
+[color] 6
+dut.u_mapper.os_mdata_o[1:0]
+@20000
+-
+@28
+[color] 6
+dut.u_mapper.os_rfd_i
+@1401200
+-u_mapper
+@200
+-
+@c00200
+-u_zero_append
+@28
+dut.u_zero_append.clk_i
+dut.u_zero_append.en_i
+dut.u_zero_append.srst_i
+@200
+-Internal Control
+@28
+dut.u_zero_append.input_reg_enable_s
+dut.u_zero_append.internal_enable_s
+dut.u_zero_append.counter_last_s
+@24
+dut.u_zero_append.counter_s[3:0]
+@8024
+dut.u_zero_append.counter_s[3:0]
+@20000
+-
+@200
+-Input Stream
+@420
+dut.u_zero_append.is_mdata_i[1:0]
+@8420
+dut.u_zero_append.is_mdata_i[1:0]
+@20000
+-
+@28
+dut.u_zero_append.is_dv_i
+dut.u_zero_append.is_rfd_o
+@200
+-Output Stream
+@420
+dut.u_zero_append.os_deltas_o[1:0]
+@8420
+dut.u_zero_append.os_deltas_o[1:0]
+@20000
+-
+@28
+dut.u_zero_append.os_dv_o
+dut.u_zero_append.os_rfd_i
+@1401200
+-u_zero_append
+@200
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
 [pattern_trace] 1
 [pattern_trace] 0

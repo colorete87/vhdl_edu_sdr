@@ -29,9 +29,9 @@ architecture rtl of tb_bb_modulator is
       os_dv_o       : out std_logic;
       os_rfd_i      : in  std_logic;
       -- Control and report IOs
-      n_bytes_i     : in  std_logic_vector(7 downto 0);
-      n_pre_i       : in  std_logic_vector(7 downto 0);
-      n_sfd_i       : in  std_logic_vector(7 downto 0);
+      nm1_bytes_i   : in  std_logic_vector(7 downto 0);
+      nm1_pre_i     : in  std_logic_vector(7 downto 0);
+      nm1_sfd_i     : in  std_logic_vector(7 downto 0);
       send_i        : in  std_logic;
       tx_rdy_o      : out std_logic
     );
@@ -50,9 +50,9 @@ architecture rtl of tb_bb_modulator is
   signal tb_dut_send_i     : std_logic;
   signal tb_dut_tx_rdy_o   : std_logic;
 
-  constant SAMPLE_PERIOD : time    := 62500 ps;
-  constant N_TX          : integer := 10;
-  constant N_ZEROS       : integer := 123;
+  constant SAMPLE_PERIOD   : time    := 62500 ps;
+  constant N_TX            : integer := 5;
+  constant N_ZEROS         : integer := 123;
                              
 begin
 
@@ -74,9 +74,9 @@ begin
     os_dv_o       => tb_dut_os_dv_o,
     os_rfd_i      => tb_dut_os_rfd_i,
     -- Control and report IOs
-    n_bytes_i     => X"04",
-    n_pre_i       => X"10",
-    n_sfd_i       => X"02", 
+    nm1_bytes_i   => X"03",
+    nm1_pre_i     => X"0F",
+    nm1_sfd_i     => X"01", 
     send_i        => tb_dut_send_i,
     tx_rdy_o      => tb_dut_tx_rdy_o
   );
@@ -90,20 +90,26 @@ begin
   ------------------------------------------------------------
   -- clock
   tb_dut_clk_i <= not tb_dut_clk_i after SAMPLE_PERIOD/2;
+  --
+  --
   -- Enable and reset Stimulus
+  -- Signals:
+  -- * tb_dut_en_i
+  -- * tb_dut_srst_i
   process
   begin
     tb_dut_en_i       <= '1';
     tb_dut_srst_i     <= '1';
-    wait until rising_edge(tb_dut_clk_i);
-    wait until rising_edge(tb_dut_clk_i);
-    wait until rising_edge(tb_dut_clk_i);
+    wait for 3*SAMPLE_PERIOD;
     tb_dut_en_i       <= '1';
     tb_dut_srst_i     <= '0';
     wait;
   end process;
   --
+  --
   -- Control Stimulus
+  -- Signals:
+  -- * tb_dut_send_i
   process
     variable l      : line;
   begin
@@ -114,49 +120,56 @@ begin
         wait until tb_dut_tx_rdy_o = '1';
       end if;
       -- Wait N_ZEROS clocks
-      for j in 1 to N_ZEROS loop
-        wait until rising_edge(tb_dut_clk_i);
-      end loop;
+      wait for N_ZEROS*SAMPLE_PERIOD;
       -- Send data and then return signal to 0
       tb_dut_send_i <= '1';
-      wait until rising_edge(tb_dut_clk_i);
-      wait until rising_edge(tb_dut_clk_i);
+      wait for 33*SAMPLE_PERIOD;
       tb_dut_send_i <= '0';
     end loop;
-    --
     -- END OF SIMULATION
-    write(l,string'("                                ")); writeline(output,l); -- COLO
-    write(l,string'("#################################")); writeline(output,l); -- COLO
-    write(l,string'("#                               #")); writeline(output,l); -- COLO
-    write(l,string'("#  ++====    ++\  ++    ++=\\   #")); writeline(output,l); -- COLO
-    write(l,string'("#  ||        ||\\ ||    ||  \\  #")); writeline(output,l); -- COLO
-    write(l,string'("#  ||===     || \\||    ||  ||  #")); writeline(output,l); -- COLO
-    write(l,string'("#  ||        ||  \||    ||  //  #")); writeline(output,l); -- COLO
-    write(l,string'("#  ++====    ++   ++    ++=//   #")); writeline(output,l); -- COLO
-    write(l,string'("#                               #")); writeline(output,l); -- COLO
-    write(l,string'("#################################")); writeline(output,l); -- COLO
-    write(l,string'("                                ")); writeline(output,l); -- COLO
+    write(l,string'("                                 ")); writeline(output,l);
+    write(l,string'("#################################")); writeline(output,l);
+    write(l,string'("#                               #")); writeline(output,l);
+    write(l,string'("#  ++====    ++\  ++    ++=\\   #")); writeline(output,l);
+    write(l,string'("#  ||        ||\\ ||    ||  \\  #")); writeline(output,l);
+    write(l,string'("#  ||===     || \\||    ||  ||  #")); writeline(output,l);
+    write(l,string'("#  ||        ||  \||    ||  //  #")); writeline(output,l);
+    write(l,string'("#  ++====    ++   ++    ++=//   #")); writeline(output,l);
+    write(l,string'("#                               #")); writeline(output,l);
+    write(l,string'("#################################")); writeline(output,l);
+    write(l,string'("                                 ")); writeline(output,l);
     assert false -- este assert se pone para abortar la simulacion
       report "Fin de la simulacion"
       severity failure;
   end process;
   --
+  --
   -- Input Stream Stimulus
+  -- Signals:
+  -- * tb_dut_is_data_i
+  -- * tb_dut_is_dv_i
   process
-    variable byte_v : integer := 0;
+    variable byte_v : integer := 255;
   begin
+    -- wait for 1 ns;
     tb_dut_is_data_i <= std_logic_vector(to_unsigned(byte_v,8));
     tb_dut_is_dv_i   <= '1';
     loop
-      wait until rising_edge(tb_dut_clk_i);
+      wait for 1*SAMPLE_PERIOD;
       if tb_dut_is_rfd_o = '1' then
-        byte_v := byte_v+1;
+        byte_v := byte_v-1;
+        if byte_v < 0 then
+          byte_v := 255;
+        end if;
         tb_dut_is_data_i <= std_logic_vector(to_unsigned(byte_v,8));
       end if;
     end loop;
   end process;
   --
+  --
   -- Output Stream Stimulus
+  -- Signals:
+  -- * tb_dut_os_rfd_i
   process
   begin
     tb_dut_os_rfd_i   <= '1';

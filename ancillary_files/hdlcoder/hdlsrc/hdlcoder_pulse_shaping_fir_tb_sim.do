@@ -1,0 +1,10 @@
+onbreak resume
+onerror resume
+vsim -novopt work.hdlcoder_pulse_shaping_fir_tb
+add wave sim:/hdlcoder_pulse_shaping_fir_tb/u_hdlcoder_pulse_shaping_fir/clk
+add wave sim:/hdlcoder_pulse_shaping_fir_tb/u_hdlcoder_pulse_shaping_fir/clk_enable
+add wave sim:/hdlcoder_pulse_shaping_fir_tb/u_hdlcoder_pulse_shaping_fir/reset
+add wave sim:/hdlcoder_pulse_shaping_fir_tb/u_hdlcoder_pulse_shaping_fir/filter_in
+add wave sim:/hdlcoder_pulse_shaping_fir_tb/u_hdlcoder_pulse_shaping_fir/filter_out
+add wave sim:/hdlcoder_pulse_shaping_fir_tb/filter_out_ref
+run -all

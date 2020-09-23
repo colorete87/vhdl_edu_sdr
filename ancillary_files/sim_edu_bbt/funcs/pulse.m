@@ -31,7 +31,7 @@ function [p n_fir] = pulse(Ts,Tsymb,type)
   assert(mod(n_fir3,1)==0 && n_fir3>=n_pulse);
   %
   aux_t = Ts:Ts:(Ts*(n_fir3-1)/2);
-  aux_t = [-flip(aux_t), 0, aux_t];
+  aux_t = [-fliplr(aux_t), 0, aux_t];
   % Raised Cosine
   pulse3 = raised_cosine(aux_t,Tsymb,Beta); % TODO: Utilizar RRC en vez de RC (este solo esta para debug)
   pulse3 = pulse3./max(pulse3);
@@ -46,16 +46,16 @@ function [p n_fir] = pulse(Ts,Tsymb,type)
   %-----------------------------------------------------------
   % Elijo el pulso
   switch(type)
-    case "square"
+    case 'square'
       n_fir = n_fir1;
       p     = pulse1;
-    case "sin"
+    case 'sin'
       n_fir = n_fir2;
       p     = pulse2;
-    case "rc"
+    case 'rc'
       n_fir = n_fir3;
       p     = pulse3;
-    case "rrc"
+    case 'rrc'
       n_fir = n_fir4;
       p     = pulse4;
   end
