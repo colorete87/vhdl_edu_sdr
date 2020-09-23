@@ -62,10 +62,10 @@ $(TBS:%=gtkwave_%): gtkwave_% : $(VER_DIR)%/waves.$(WOF)
 .PHONY: clean
 clean:
 	@clear
-	-$(foreach tb,$(VER)$(TBS),rm $(VER_DIR)$(tb)/*.o;)
-	-rm $(TBS_EXE)
-	-rm $(TBS_WAVES)
-	-rm $(TBS_WLIBS)
+	-$(foreach tb,$(VER)$(TBS),rm -f $(VER_DIR)$(tb)/*.o;)
+	-rm -f $(TBS_EXE)
+	-rm -f $(TBS_WAVES)
+	-rm -f $(TBS_WLIBS)
 
 
 
