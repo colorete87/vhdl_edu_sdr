@@ -152,8 +152,6 @@ begin
         else
           next_state_s <= S_DATA;
         end if;
-      when others =>
-        next_state_s <= S_WAIT;
     end case;
   end process;
   
@@ -179,7 +177,6 @@ begin
         if counter_s(2 downto 0) = "111" then
           bbm_is_rfd_s <= en_i and map_is_rfd_i and internal_enable_s;
         end if;
-      when others =>
     end case;
   end process;
 
