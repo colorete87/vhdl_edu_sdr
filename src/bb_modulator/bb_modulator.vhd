@@ -134,7 +134,6 @@ architecture rtl of bb_modulator is
   signal map_is_dv_s     : std_logic;
   signal map_is_rfd_s    : std_logic;
 
-
   -- Mapper Output Stream Signals
   signal map_os_data_s   : std_logic_vector(1 downto 0);
   signal map_os_dv_s     : std_logic;
