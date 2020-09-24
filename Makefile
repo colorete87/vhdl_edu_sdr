@@ -45,9 +45,14 @@ $(TBS_EXE) : % : %.vhd $$(dir $$@)$(WLIB_NAME) $(SRC_FILES)
 		ghdl -m $(GHDL_OPTIONS) $(notdir $@)
 
 
+# .SECONDEXPANSION:
+# $(TBS_WAVES): $(VER_DIR)%/waves.$(WOF) : $$(subst waves.$$(WOF),,$$@)% $(DATA_FILES)
+# 	$< --$(WOF)=$@ $(RUN_FLAGS)
+# 	@echo "File $< Updated! (Reload Waveform)"
 .SECONDEXPANSION:
 $(TBS_WAVES): $(VER_DIR)%/waves.$(WOF) : $$(subst waves.$$(WOF),,$$@)% $(DATA_FILES)
-	$< --$(WOF)=$@ $(RUN_FLAGS)
+	@cd $(dir $@) && \
+		ghdl -r $(notdir $<) --$(WOF)=waves.$(WOF) $(RUN_FLAGS)
 	@echo "File $< Updated! (Reload Waveform)"
 
 

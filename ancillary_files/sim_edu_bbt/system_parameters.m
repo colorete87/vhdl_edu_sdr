@@ -10,14 +10,14 @@ E_pulse = 1e-6;
 %-----------------------------------------------------------
 
 
-[pulse n_fir] = pulse(Ts,Tsymb,'rrc');
+[pulse n_fir] = pulse(Ts,Tsymb,'rc');
 
 
 spar.Tsymb   = Tsymb;
 spar.Ts      = Ts;
 
 spar.n_bytes = 4;  % Number of bytes transmitted per transmission
-spar.n_pre   = 16; % Length of preamble simbols
+spar.n_pre   = 16; % Length of preamble symbols
 spar.n_sfd   = 2;  % Length of sfd
 
 spar.pulse   = pulse;
