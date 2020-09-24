@@ -12,7 +12,7 @@ RUN_FLAGS =
 
 DATA_FILES =
 
-SRC_DIRS  = ./src
+SRC_DIRS  = ./src ./src/pulse_shaping ./src/bb_modulator
 SRC_FILES = $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.vhd))
 
 # GHDL_OPTIONS = --std=02 --ieee=synopsys --work=$(WLIB_NAME)
@@ -82,26 +82,33 @@ clean:
 .PHONY: list_targets
 list_targets:
 	@echo "TESTS:"
-	@$(foreach tb,$(TBS),echo "  "$(tb);)
+	@$(foreach var,$(TBS),echo "  "$(var);)
 	@echo "EXE"
-	@$(foreach tb,$(TBS_EXE),echo "  "$(tb);)
+	@$(foreach var,$(TBS_EXE),echo "  "$(var);)
 	@echo "WAVES"
-	@$(foreach tb,$(TBS_WAVES),echo "  "$(tb);)
+	@$(foreach var,$(TBS_WAVES),echo "  "$(var);)
 	@echo "WLIBS"
-	@$(foreach tb,$(TBS_WLIBS),echo "  "$(tb);)
+	@$(foreach var,$(TBS_WLIBS),echo "  "$(var);)
 	@echo
 
 
 .PHONY: list_src_files
 list_src_files:
 	@echo "SRC FILES"
-	@$(foreach tb,$(SRC_FILES),echo "  "$(tb);)
+	@$(foreach var,$(SRC_FILES),echo "  "$(var);)
+	@echo
+
+
+.PHONY: list_src_dir
+list_src_dir:
+	@echo "SRC DIRS"
+	@$(foreach var,$(SRC_DIRS),echo "  "$(var);)
 	@echo
 
 
 .PHONY: list_tests
 list_tests:
 	@echo "SRC FILES"
-	@$(foreach tb,$(TBS),echo "  "$(tb);)
+	@$(foreach var,$(TBS),echo "  "$(var);)
 	@echo
 
