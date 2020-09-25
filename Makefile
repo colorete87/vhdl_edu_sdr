@@ -12,7 +12,11 @@ RUN_FLAGS =
 
 DATA_FILES =
 
-SRC_DIRS  = ./src ./src/pulse_shaping ./src/bb_modulator
+SRC_DIRS  = ./src
+SRC_DIRS += ./src/modulator
+SRC_DIRS += ./src/pulse_shaping
+SRC_DIRS += ./src/channel
+SRC_DIRS += ./src/prng
 SRC_FILES = $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.vhd))
 
 # GHDL_OPTIONS = --std=02 --ieee=synopsys --work=$(WLIB_NAME)
