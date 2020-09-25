@@ -17,6 +17,8 @@ SRC_DIRS += ./src/modulator
 SRC_DIRS += ./src/pulse_shaping
 SRC_DIRS += ./src/channel
 SRC_DIRS += ./src/prng
+SRC_DIRS += ./src/demodulator
+SRC_DIRS += ./src_test
 SRC_FILES = $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.vhd))
 
 # GHDL_OPTIONS = --std=02 --ieee=synopsys --work=$(WLIB_NAME)

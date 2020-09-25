@@ -1,0 +1,74 @@
+[*]
+[*] GTKWave Analyzer v3.3.102 (w)1999-2019 BSI
+[*] Fri Sep 25 08:40:41 2020
+[*]
+[dumpfile] "/home/fzacchigna/fpga/proyects/vhdl_edu_bbt/verification/tb_test_modem_channel/waves.fst"
+[dumpfile_mtime] "Fri Sep 25 08:38:50 2020"
+[dumpfile_size] 39870
+[savefile] "/home/fzacchigna/fpga/proyects/vhdl_edu_bbt/verification/tb_test_modem_channel/waves_00.gtkw"
+[timestart] 0
+[size] 1920 1016
+[pos] -1 -1
+*-32.000000 13375000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] dut.
+[treeopen] dut.u_modem.
+[treeopen] dut.u_modem.u_mod.
+[sst_width] 500
+[signals_width] 182
+[sst_expanded] 1
+[sst_vpaned_height] 286
+@28
+dut.clk_i
+dut.en_i
+dut.srst_i
+@200
+-Input Bytes
+@24
+dut.is_data_i[7:0]
+@28
+dut.is_dv_i
+dut.is_rfd_o
+@200
+-Modulated Signal
+@420
+dut.mod_os_data_s[9:0]
+@8420
+dut.mod_os_data_s[9:0]
+@20000
+-
+-
+@28
+dut.mod_os_dv_s
+dut.mod_os_rfd_s
+@200
+-Channel Signal
+@420
+dut.chan_os_data_s[9:0]
+@8420
+dut.chan_os_data_s[9:0]
+@20000
+-
+-
+@28
+dut.chan_os_dv_s
+dut.chan_os_rfd_s
+@200
+-Demodulated Bytes
+@24
+dut.os_data_o[7:0]
+@28
+dut.os_dv_o
+dut.os_rfd_i
+@200
+-Modem Control
+@28
+dut.send_s
+@200
+-Modem State
+@28
+dut.tx_rdy_s
+dut.rx_rdy_s
+@200
+-
+[pattern_trace] 1
+[pattern_trace] 0
