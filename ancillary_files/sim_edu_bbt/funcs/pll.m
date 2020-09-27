@@ -44,7 +44,7 @@ function [vco pllis] =  pll(input, f0, fs, kp, ki, delay);
     % err(it)     = err(it-1)+(kp+ki)*phd(it)-ki*phd(it-1);
     % err(it)     = (kp+ki)*phd(it)+ki*phd(it-1);
     int_err(it) = ki*phd(it)+int_err(it-1);
-    err(it)     = kp*phd(it)+int_err(it-1);
+    err(it)     = kp*phd(it)+int_err(it);
 
     % Updata VCO
     phi_hat(it) = phi_hat(it-1)+err(it);

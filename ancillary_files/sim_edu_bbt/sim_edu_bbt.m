@@ -97,20 +97,20 @@ if N_TX<=10
   % stem(t,y,    'o','linewidth',1);
   % % Signal Detection
   % figure(); hold on;
-  % plot(t,dis.y_fa);
-  % plot(t,dis.y_fa_sq);
-  % plot(t,dis.y_fa_sq_ma);
+  % plot(t,dis.y_mf);
+  % plot(t,dis.y_mf_sq);
+  % plot(t,dis.y_mf_sq_ma);
   % plot(t,dis.detection-2,'linewidth',4);
-  % % PLL 1
-  % figure(); hold on;
-  % plot(t,dis.y_fa_sq      ,'-');
-  % plot(t,dis.pllis.phd    ,'-');
-  % plot(t,dis.pllis.err    ,'-');
-  % plot(t,dis.pllis.phi_hat,'-');
-  % plot(t,dis.pll_cos/2-1  ,'-');
-  % plot(t,dis.pll_sin/2-2.5,'-');
-  % plot(t,dis.pll_clk_i-1.5,'-','linewidth',2);
-  % plot(t,dis.pll_clk_q-3  ,'-','linewidth',2);
+  % PLL 1
+  figure(); hold on;
+  plot(t,dis.y_mf_sq      ,'-');
+  plot(t,dis.pllis.phd    ,'-','displayname','phd');
+  plot(t,dis.pllis.err    ,'-','displayname','err');
+  plot(t,dis.pllis.phi_hat,'-','displayname','phi_hat');
+  plot(t,dis.pll_cos/2-1  ,'-');
+  plot(t,dis.pll_sin/2-2.5,'-');
+  plot(t,dis.pll_clk_i-1.5,'-','linewidth',2);
+  plot(t,dis.pll_clk_q-3  ,'-','linewidth',2);
   % % PLLt, 2
   % figure(); hold on;
   % plot(t,dis.detection,'linewidth',4);
@@ -120,10 +120,10 @@ if N_TX<=10
   % plot(t,dis.pll_clk_q-3,'linewidth',2);
   % % Synch
   % figure(); hold on;
-  % plot(t,dis.y_fa          -7,'-o','displayname','y_{fa}');
-  % plot(t,dis.y_fa_pf       -7,'-x','displayname','y_{fa-sq}');
-  % plot(t,dis.y_fa_pf_sq    -7,'-s','displayname','y_{fa-sq-ma}');
-  % plot(t,dis.y_fa_pf_sq_bpf-7,'-.','displayname','y_{fa-sq-ma}');
+  % plot(t,dis.y_mf          -7,'-o','displayname','y_{fa}');
+  % plot(t,dis.y_mf_pf       -7,'-x','displayname','y_{fa-sq}');
+  % plot(t,dis.y_mf_pf_sq    -7,'-s','displayname','y_{fa-sq-ma}');
+  % plot(t,dis.y_mf_pf_sq_bpf-7,'-.','displayname','y_{fa-sq-ma}');
   % plot(t,dis.detection-4.5,'linewidth',2);
   % stem(k, 2*ones(size(k)),'k.');
   % stem(k,-5*ones(size(k)),'k.');
@@ -138,10 +138,10 @@ if N_TX<=10
   % legend('show');
   % % Demod
   % figure(); hold on;
-  % plot(t,dis.y_fa     ,'-o');
+  % plot(t,dis.y_mf     ,'-o');
   % plot(t,dis.detection,'-o');
   % % plot(t,dis.sfd      ,'-o');
-  % % plot(dis.y_fa(
+  % % plot(dis.y_mf(
 else
   % figure(); hold on;
   % hist(x,63);

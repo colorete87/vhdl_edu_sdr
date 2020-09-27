@@ -17,7 +17,11 @@ function [p n_fir] = pulse(Ts,Tsymb,type)
   % Pulse: Sin
   % ----------------
   n_fir2 = n_pulse;
-  aux_t  = Ts/2:Ts:Tsymb-Ts/2;
+  if mod(n_pulse,2) == 0
+    aux_t  = 0:Ts:Tsymb-Ts;
+  else
+    aux_t  = Ts/2:Ts:Tsymb-Ts/2;
+  end
   pulse2 = sin(pi/Tsymb*aux_t);
   aux_E2 = Tsymb/2;
   %-----------------------------------------------------------
@@ -26,14 +30,14 @@ function [p n_fir] = pulse(Ts,Tsymb,type)
   % Pulse: (Root)-Raised Cosine params
   % ----------------
   Beta   = 0.5;
-  n_fir3 = 127;
-  n_fir4 = 127;
-  assert(mod(n_fir3,1)==0 && n_fir3>=n_pulse);
+  n_fir3 = n_pulse*5-1;
+  n_fir4 = n_pulse*5-1;
+  assert(mod(n_fir3,2)==1 && n_fir3>=n_pulse);
   %
   aux_t = Ts:Ts:(Ts*(n_fir3-1)/2);
   aux_t = [-fliplr(aux_t), 0, aux_t];
   % Raised Cosine
-  pulse3 = raised_cosine(aux_t,Tsymb,Beta); % TODO: Utilizar RRC en vez de RC (este solo esta para debug)
+  pulse3 = raised_cosine(aux_t,Tsymb,Beta);
   pulse3 = pulse3./max(pulse3);
   aux_E  = Tsymb;
   % Root-Raised Cosine

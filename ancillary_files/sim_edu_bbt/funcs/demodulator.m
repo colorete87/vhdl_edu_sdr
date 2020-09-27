@@ -5,15 +5,15 @@ function [hat_bytes dis] = demodulator(y,spar) % n_bytes,pulse,n_pulse)
   n_bytes = spar.n_bytes;
 
   % Matched filter
-  y_fa = filter(spar.pulse,[1],y);
-  y_fa = y_fa./sum(spar.pulse.^2);
+  y_mf = filter(spar.pulse,[1],y);
+  y_mf = y_mf./sum(spar.pulse.^2);
 
   % Squared input and filtered with moving average
-  y_fa_sq    = y_fa.^2;
+  y_mf_sq    = y_mf.^2;
   n_ma       = spar.n_pulse;
   % n_ma       = ceil(spar.n_pulse/2);
   % n_ma       = 32;
-  y_fa_sq_ma = filter(ones(1,n_ma)./n_ma,[1],y_fa_sq);
+  y_mf_sq_ma = filter(ones(1,n_ma)./n_ma,[1],y_mf_sq);
 
   % PreFilter, SQuare, BandPassFilter
   prefilter_data     = dlmread('../coeffs_generators/data/symb_sync_pre_filter.dat');
@@ -22,10 +22,11 @@ function [hat_bytes dis] = demodulator(y,spar) % n_bytes,pulse,n_pulse)
   filter_data        = dlmread('../coeffs_generators/data/symb_sync_bp_filter.dat');
   filter_b           = filter_data(1,:);
   filter_a           = filter_data(2,:);
-  y_fa_pf            = filter(prefilter_b,prefilter_a,y_fa);
-  % y_fa_pf            = y_fa; % NOTE: Comentar para eliminar el pre-filter
-  y_fa_pf_sq         = y_fa_pf.^2;
-  y_fa_pf_sq_bpf     = filter(filter_b,filter_a,y_fa_pf_sq);
+  y_mf_pf            = filter(prefilter_b,prefilter_a,y_mf);
+  % y_mf_pf            = y_mf; % NOTE: descomentar para eliminar el pre-filter
+  y_mf_pf_sq         = y_mf_pf.^2;
+  y_mf_pf_sq_bpf     = filter(filter_b,filter_a,y_mf_pf_sq);
+  % y_mf_pf_sq_bpf     = y_mf_pf_sq; % NOTE: descomentar para eliminar el bp-filter
 
   % pll
   f0    = 1./spar.Tsymb;
@@ -33,7 +34,7 @@ function [hat_bytes dis] = demodulator(y,spar) % n_bytes,pulse,n_pulse)
   kp    = spar.pll.kp;
   ki    = spar.pll.ki;
   delay = spar.pll.delay;
-  [vco pllis] = pll(y_fa_pf_sq_bpf,f0,fs,kp,ki,delay);
+  [vco pllis] = pll(y_mf_pf_sq_bpf,f0,fs,kp,ki,delay);
 
   % pll clk signals
   pll_cos        = real(vco);
@@ -42,7 +43,7 @@ function [hat_bytes dis] = demodulator(y,spar) % n_bytes,pulse,n_pulse)
   pll_clk_q      = pll_sin>=0;
 
   % Simbol detection
-  detection  = y_fa_sq_ma>=spar.det_th;
+  detection  = y_mf_sq_ma>=spar.det_th;
   det_start  = ~detection & [0  detection(1:end-1)];
   det_stop   =  detection & [0 ~detection(1:end-1)];
   flank_qp   = ~pll_clk_q & [0  pll_clk_q(1:end-1)];
@@ -51,7 +52,7 @@ function [hat_bytes dis] = demodulator(y,spar) % n_bytes,pulse,n_pulse)
   flank_in   =  pll_clk_i & [0 ~pll_clk_i(1:end-1)];
   flank      = flank_in;
   en_sample  = flank & detection;
-  hat_xn     = y_fa(en_sample==1);
+  hat_xn     = y_mf(en_sample==1);
   hat_packet = hat_xn>0;
   sfd        = zeros(1,spar.n_sfd);
   if mod(spar.n_pre,2)==0
@@ -101,12 +102,12 @@ function [hat_bytes dis] = demodulator(y,spar) % n_bytes,pulse,n_pulse)
   % bytes  = hat_dn>0;
 
   % Demodulator Internal Signals (DIS)
-  dis.y_fa           = y_fa;
-  dis.y_fa_sq        = y_fa_sq;
-  dis.y_fa_sq_ma     = y_fa_sq_ma;
-  dis.y_fa_pf        = y_fa_pf;
-  dis.y_fa_pf_sq     = y_fa_pf_sq;
-  dis.y_fa_pf_sq_bpf = y_fa_pf_sq_bpf;
+  dis.y_mf           = y_mf;
+  dis.y_mf_sq        = y_mf_sq;
+  dis.y_mf_sq_ma     = y_mf_sq_ma;
+  dis.y_mf_pf        = y_mf_pf;
+  dis.y_mf_pf_sq     = y_mf_pf_sq;
+  dis.y_mf_pf_sq_bpf = y_mf_pf_sq_bpf;
   dis.detection      = detection;
   dis.sfd            = sfd;
   dis.flank_qp       = flank_qp;
