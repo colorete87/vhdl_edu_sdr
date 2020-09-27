@@ -27,7 +27,9 @@ architecture rtl of tb_test_modem_channel is
       -- Output Stream
       os_data_o     : out std_logic_vector(7 downto 0);
       os_dv_o       : out std_logic;
-      os_rfd_i      : in  std_logic
+      os_rfd_i      : in  std_logic;
+      -- Others
+      tx_rdy_o      : out std_logic
     );
   end component test_modem_channel;
 
@@ -41,9 +43,10 @@ architecture rtl of tb_test_modem_channel is
   signal tb_dut_os_data_o  : std_logic_vector(7 downto 0);                            
   signal tb_dut_os_dv_o    : std_logic;
   signal tb_dut_os_rfd_i   : std_logic;
+  signal tb_dut_tx_rdy_o   : std_logic;
 
   constant SAMPLE_PERIOD   : time    := 62500 ps;
-  constant N_TX            : integer := 5;
+  constant N_TX            : integer := 3;
   constant N_ZEROS         : integer := 123;
                              
 begin
@@ -64,7 +67,9 @@ begin
     -- Output Stream
     os_data_o     => tb_dut_os_data_o,
     os_dv_o       => tb_dut_os_dv_o,
-    os_rfd_i      => tb_dut_os_rfd_i
+    os_rfd_i      => tb_dut_os_rfd_i,
+    -- Others
+    tx_rdy_o      => tb_dut_tx_rdy_o
   );
   ------------------------------------------------------------
   -- END DUT
@@ -97,40 +102,37 @@ begin
   -- Signals:
   -- * tb_dut_is_data_i
   -- * tb_dut_is_dv_i
-  process
+  tb_dut_is_dv_i   <= '1';
+  process (tb_dut_clk_i)
+    variable i_v    : integer := 0;
     variable byte_v : integer := 255;
     variable l      : line;
   begin
-    -- wait for 1 ns;
     tb_dut_is_data_i <= std_logic_vector(to_unsigned(byte_v,8));
-    tb_dut_is_dv_i   <= '1';
-    for i in 0 to 31 loop
-      wait for 1*SAMPLE_PERIOD;
+    if rising_edge(tb_dut_clk_i) then
       if tb_dut_is_rfd_o = '1' then
-      else
-        wait until tb_dut_is_rfd_o = '1';
-      end if;
-      byte_v := byte_v-1;
-      if byte_v < 0 then
-        byte_v := 255;
-      end if;
-      tb_dut_is_data_i <= std_logic_vector(to_unsigned(byte_v,8));
-    end loop;
-    -- END OF SIMULATION
-    write(l,string'("                                 ")); writeline(output,l);
-    write(l,string'("#################################")); writeline(output,l);
-    write(l,string'("#                               #")); writeline(output,l);
-    write(l,string'("#  ++====    ++\  ++    ++=\\   #")); writeline(output,l);
-    write(l,string'("#  ||        ||\\ ||    ||  \\  #")); writeline(output,l);
-    write(l,string'("#  ||===     || \\||    ||  ||  #")); writeline(output,l);
-    write(l,string'("#  ||        ||  \||    ||  //  #")); writeline(output,l);
-    write(l,string'("#  ++====    ++   ++    ++=//   #")); writeline(output,l);
-    write(l,string'("#                               #")); writeline(output,l);
-    write(l,string'("#################################")); writeline(output,l);
-    write(l,string'("                                 ")); writeline(output,l);
-    assert false -- este assert se pone para abortar la simulacion
-      report "Fin de la simulacion"
-      severity failure;
+        report "[INFO] Byte número:" & integer'image(i_v);
+        i_v    := i_v+1;
+        byte_v := byte_v-1;
+      end  if;
+    end if;
+    if i_v >= N_TX*4 and tb_dut_tx_rdy_o = '1' then
+      -- END OF SIMULATION
+      write(l,string'("                                 ")); writeline(output,l);
+      write(l,string'("#################################")); writeline(output,l);
+      write(l,string'("#                               #")); writeline(output,l);
+      write(l,string'("#  ++====    ++\  ++    ++=\\   #")); writeline(output,l);
+      write(l,string'("#  ||        ||\\ ||    ||  \\  #")); writeline(output,l);
+      write(l,string'("#  ||===     || \\||    ||  ||  #")); writeline(output,l);
+      write(l,string'("#  ||        ||  \||    ||  //  #")); writeline(output,l);
+      write(l,string'("#  ++====    ++   ++    ++=//   #")); writeline(output,l);
+      write(l,string'("#                               #")); writeline(output,l);
+      write(l,string'("#################################")); writeline(output,l);
+      write(l,string'("                                 ")); writeline(output,l);
+      assert false -- este assert se pone para abortar la simulacion
+        report "[INFO] Fin de la simulacion"
+        severity failure;
+    end if;
   end process;
   --
   --

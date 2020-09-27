@@ -1,20 +1,18 @@
 [*]
 [*] GTKWave Analyzer v3.3.102 (w)1999-2019 BSI
-[*] Sun Sep 27 10:07:03 2020
+[*] Sun Sep 27 09:14:53 2020
 [*]
 [dumpfile] "/home/fzacchigna/fpga/proyects/vhdl_edu_bbt/verification/tb_test_modem_channel/waves.fst"
-[dumpfile_mtime] "Sun Sep 27 10:06:44 2020"
-[dumpfile_size] 1305917
-[savefile] "/home/fzacchigna/fpga/proyects/vhdl_edu_bbt/verification/tb_test_modem_channel/waves_00.gtkw"
-[timestart] 12340000000
+[dumpfile_mtime] "Sun Sep 27 09:06:10 2020"
+[dumpfile_size] 462548
+[savefile] "/home/fzacchigna/fpga/proyects/vhdl_edu_bbt/verification/tb_test_modem_channel/waves_01-AllSignals.gtkw"
+[timestart] 0
 [size] 1920 1016
 [pos] -1 -1
-*-32.965061 37562500000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-33.965061 42370000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] dut.
 [treeopen] dut.u_modem.
-[treeopen] dut.u_modem.u_dem.
-[treeopen] dut.u_modem.u_dem.u_symb_sync.
-[sst_width] 408
+[sst_width] 500
 [signals_width] 245
 [sst_expanded] 1
 [sst_vpaned_height] 305
@@ -79,7 +77,7 @@ dut.rx_rdy_s
 -Test Signals
 @200
 -
-@c00200
+@800200
 -Modulator Signals
 @28
 dut.u_modem.u_mod.clk_i
@@ -121,7 +119,7 @@ dut.u_modem.u_mod.nm1_sfd_i[7:0]
 -State
 @28
 dut.u_modem.u_mod.tx_rdy_o
-@1401200
+@1000200
 -Modulator Signals
 @200
 -
@@ -175,8 +173,6 @@ dut.u_channel.sigma_i[15:0]
 -Channel Signals
 @200
 -
-@800200
--Demodulator Signals
 @28
 dut.u_modem.u_dem.clk_i
 dut.u_modem.u_dem.en_i
@@ -189,33 +185,12 @@ dut.u_modem.u_dem.is_data_i[9:0]
 dut.u_modem.u_dem.is_dv_i
 dut.u_modem.u_dem.is_rfd_o
 @200
--Output Bytes
-@22
-dut.u_modem.u_dem.os_data_o[7:0]
-@28
-dut.u_modem.u_dem.os_dv_o
-dut.u_modem.u_dem.os_rfd_i
-@200
 -Matched Filter Signals
-@420
+@22
 dut.u_modem.u_dem.mf_data_s[9:0]
-@8420
-dut.u_modem.u_dem.mf_data_s[9:0]
-@20000
--
--
 @28
 dut.u_modem.u_dem.mf_dv_s
 dut.u_modem.u_dem.mf_rfd_s
-@200
--MA Delayed
-@420
-dut.u_modem.u_dem.mfd_data_s[9:0]
-@8420
-dut.u_modem.u_dem.mfd_data_s[9:0]
-@20000
--
--
 @200
 -Internal Control
 @28
@@ -229,83 +204,16 @@ dut.u_modem.u_dem.rx_rdy_o
 @22
 dut.u_modem.u_dem.det_th_i[15:0]
 dut.u_modem.u_dem.nm1_bytes_i[7:0]
+@23
 dut.u_modem.u_dem.nm1_pre_i[7:0]
+@22
 dut.u_modem.u_dem.nm1_sfd_i[7:0]
 dut.u_modem.u_dem.pll_ki_i[15:0]
 dut.u_modem.u_dem.pll_kp_i[15:0]
-@1000200
--Demodulator Signals
+@200
+-
 @c00200
--Symb Sync Signals
-@420
-dut.u_modem.u_dem.mf_data_s[9:0]
-@8420
-dut.u_modem.u_dem.mf_data_s[9:0]
-@20000
--
--
-@c00420
-dut.u_modem.u_dem.u_symb_sync.pf_s[9:0]
-@28
-(0)dut.u_modem.u_dem.u_symb_sync.pf_s[9:0]
-(1)dut.u_modem.u_dem.u_symb_sync.pf_s[9:0]
-(2)dut.u_modem.u_dem.u_symb_sync.pf_s[9:0]
-(3)dut.u_modem.u_dem.u_symb_sync.pf_s[9:0]
-(4)dut.u_modem.u_dem.u_symb_sync.pf_s[9:0]
-(5)dut.u_modem.u_dem.u_symb_sync.pf_s[9:0]
-(6)dut.u_modem.u_dem.u_symb_sync.pf_s[9:0]
-(7)dut.u_modem.u_dem.u_symb_sync.pf_s[9:0]
-(8)dut.u_modem.u_dem.u_symb_sync.pf_s[9:0]
-(9)dut.u_modem.u_dem.u_symb_sync.pf_s[9:0]
-@1401200
--group_end
-@c08420
-dut.u_modem.u_dem.u_symb_sync.pf_s[9:0]
-@28
-(0)dut.u_modem.u_dem.u_symb_sync.pf_s[9:0]
-(1)dut.u_modem.u_dem.u_symb_sync.pf_s[9:0]
-(2)dut.u_modem.u_dem.u_symb_sync.pf_s[9:0]
-(3)dut.u_modem.u_dem.u_symb_sync.pf_s[9:0]
-(4)dut.u_modem.u_dem.u_symb_sync.pf_s[9:0]
-(5)dut.u_modem.u_dem.u_symb_sync.pf_s[9:0]
-(6)dut.u_modem.u_dem.u_symb_sync.pf_s[9:0]
-(7)dut.u_modem.u_dem.u_symb_sync.pf_s[9:0]
-(8)dut.u_modem.u_dem.u_symb_sync.pf_s[9:0]
-(9)dut.u_modem.u_dem.u_symb_sync.pf_s[9:0]
-@1401200
--group_end
-@20000
--
--
-@420
-dut.u_modem.u_dem.u_symb_sync.pf_sq_s[12:0]
-@8420
-dut.u_modem.u_dem.u_symb_sync.pf_sq_s[12:0]
-@20000
--
--
-@420
-dut.u_modem.u_dem.u_symb_sync.pf_sq_bpf_s[19:0]
-@8420
-dut.u_modem.u_dem.u_symb_sync.pf_sq_bpf_s[19:0]
-@20000
--
--
-@28
-dut.u_modem.u_dem.u_symb_sync.clk_i_s
-dut.u_modem.u_dem.u_symb_sync.clk_q_s
-dut.u_modem.u_dem.u_symb_sync.en_sample_o
-@1401200
--Symb Sync Signals
-@800200
 -PLL Signals
-@420
-dut.u_modem.u_dem.u_symb_sync.u_pll.is_data_i[9:0]
-@8420
-dut.u_modem.u_dem.u_symb_sync.u_pll.is_data_i[9:0]
-@20000
--
--
 @420
 dut.u_modem.u_dem.u_symb_sync.u_pll.phase_est_s[9:0]
 @c08420
@@ -375,16 +283,89 @@ dut.u_modem.u_dem.u_symb_sync.u_pll.pll_sin_s[9:0]
 @20000
 -
 -
-@1000200
+@1401200
 -PLL Signals
-@200
+@c00200
+-Symb Sync Signals
+@420
+dut.u_modem.u_dem.mf_data_s[9:0]
+@8420
+dut.u_modem.u_dem.mf_data_s[9:0]
+@20000
+-
+-
+@c00420
+dut.u_modem.u_dem.u_symb_sync.pf_s[9:0]
+@28
+(0)dut.u_modem.u_dem.u_symb_sync.pf_s[9:0]
+(1)dut.u_modem.u_dem.u_symb_sync.pf_s[9:0]
+(2)dut.u_modem.u_dem.u_symb_sync.pf_s[9:0]
+(3)dut.u_modem.u_dem.u_symb_sync.pf_s[9:0]
+(4)dut.u_modem.u_dem.u_symb_sync.pf_s[9:0]
+(5)dut.u_modem.u_dem.u_symb_sync.pf_s[9:0]
+(6)dut.u_modem.u_dem.u_symb_sync.pf_s[9:0]
+(7)dut.u_modem.u_dem.u_symb_sync.pf_s[9:0]
+(8)dut.u_modem.u_dem.u_symb_sync.pf_s[9:0]
+(9)dut.u_modem.u_dem.u_symb_sync.pf_s[9:0]
+@1401200
+-group_end
+@c08420
+dut.u_modem.u_dem.u_symb_sync.pf_s[9:0]
+@28
+(0)dut.u_modem.u_dem.u_symb_sync.pf_s[9:0]
+(1)dut.u_modem.u_dem.u_symb_sync.pf_s[9:0]
+(2)dut.u_modem.u_dem.u_symb_sync.pf_s[9:0]
+(3)dut.u_modem.u_dem.u_symb_sync.pf_s[9:0]
+(4)dut.u_modem.u_dem.u_symb_sync.pf_s[9:0]
+(5)dut.u_modem.u_dem.u_symb_sync.pf_s[9:0]
+(6)dut.u_modem.u_dem.u_symb_sync.pf_s[9:0]
+(7)dut.u_modem.u_dem.u_symb_sync.pf_s[9:0]
+(8)dut.u_modem.u_dem.u_symb_sync.pf_s[9:0]
+(9)dut.u_modem.u_dem.u_symb_sync.pf_s[9:0]
+@1401200
+-group_end
+@20000
+-
+-
+@420
+dut.u_modem.u_dem.u_symb_sync.pf_sq_s[12:0]
+@8420
+dut.u_modem.u_dem.u_symb_sync.pf_sq_s[12:0]
+@20000
+-
+-
+@420
+dut.u_modem.u_dem.u_symb_sync.pf_sq_bpf_s[19:0]
+@8420
+dut.u_modem.u_dem.u_symb_sync.pf_sq_bpf_s[19:0]
+@20000
 -
 -
 @28
-dut.u_modem.u_dem.u_symb_sync.u_pll.en_i
-dut.u_modem.u_dem.u_symb_sync.u_pll.srst_i
-dut.u_modem.u_dem.u_symb_sync.u_pll.clk_i
+dut.u_modem.u_dem.u_symb_sync.clk_i_s
+dut.u_modem.u_dem.u_symb_sync.clk_q_s
+dut.u_modem.u_dem.u_symb_sync.en_sample_o
+@1401200
+-Symb Sync Signals
 @200
+-
+-Demodulated Bytes
+@24
+dut.os_data_o[7:0]
+@28
+dut.os_dv_o
+dut.os_rfd_i
+@200
+-Modem Control
+@28
+dut.send_s
+@200
+-Modem State
+@28
+dut.tx_rdy_s
+dut.rx_rdy_s
+@200
+-
 -
 @20000
 -

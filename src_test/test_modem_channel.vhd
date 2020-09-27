@@ -19,7 +19,9 @@ entity test_modem_channel is
     -- Output Stream
     os_data_o     : out std_logic_vector(7 downto 0);
     os_dv_o       : out std_logic;
-    os_rfd_i      : in  std_logic
+    os_rfd_i      : in  std_logic;
+    -- Others
+    tx_rdy_o      : out std_logic
   );
 end entity test_modem_channel;
 
@@ -101,9 +103,9 @@ architecture rtl of test_modem_channel is
   signal rx_rdy_s       : std_logic;
 
   -- Modem config
-  constant nm1_bytes_c  : std_logic_vector( 7 downto 0) := X"04";
-  constant nm1_pre_c    : std_logic_vector( 7 downto 0) := X"08";
-  constant nm1_sfd_c    : std_logic_vector( 7 downto 0) := X"02";
+  constant nm1_bytes_c  : std_logic_vector( 7 downto 0) := X"03";
+  constant nm1_pre_c    : std_logic_vector( 7 downto 0) := X"06";
+  constant nm1_sfd_c    : std_logic_vector( 7 downto 0) := X"01";
   constant det_th_c     : std_logic_vector(15 downto 0) := X"0400";
   constant pll_kp_c     : std_logic_vector(15 downto 0) := X"0400";
   constant pll_ki_c     : std_logic_vector(15 downto 0) := X"0100";
@@ -111,6 +113,9 @@ architecture rtl of test_modem_channel is
   constant sigma_c      : std_logic_vector(15 downto 0) := X"0000"; -- QU16.12
 
 begin
+
+  -- Modem State
+  tx_rdy_o <= tx_rdy_s;
 
   -- Modem Control
   u_modem_control : process(clk_i)
