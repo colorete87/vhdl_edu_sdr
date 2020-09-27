@@ -1,0 +1,10 @@
+onbreak resume
+onerror resume
+vsim -novopt work.hdlcoder_bandpass_filter_tb
+add wave sim:/hdlcoder_bandpass_filter_tb/u_hdlcoder_bandpass_filter/clk
+add wave sim:/hdlcoder_bandpass_filter_tb/u_hdlcoder_bandpass_filter/clk_enable
+add wave sim:/hdlcoder_bandpass_filter_tb/u_hdlcoder_bandpass_filter/reset
+add wave sim:/hdlcoder_bandpass_filter_tb/u_hdlcoder_bandpass_filter/filter_in
+add wave sim:/hdlcoder_bandpass_filter_tb/u_hdlcoder_bandpass_filter/filter_out
+add wave sim:/hdlcoder_bandpass_filter_tb/filter_out_ref
+run -all

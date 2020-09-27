@@ -13,26 +13,30 @@ addpath(genpath('../lib/'));
 %-----------------------------------------------------------
 % Parameters
 %-----------------------------------------------------------
-run('../sim_edu_bbt/system_parameters.m');
-fsymb = 1./Tsymb;
-fs    = 1./Ts;
+% run('../sim_edu_bbt/system_parameters.m');
+% fsymb = 1./Tsymb;
+% fs    = 1./Ts;
+filter_data = dlmread('../coeffs_generators/data/symb_sync_pre_filter.dat');
+filter_b    = filter_data(1,:);
+filter_a    = filter_data(2,:);
 %-----------------------------------------------------------
 
 
 %-----------------------------------------------------------
 % Create filter and hdl
 %-----------------------------------------------------------
-MyFilter = dfilt.dffir(spar.pulse);
+% MyFilter = dfilt.dffir(spar.pulse./sum(spar.pulse.^2));
+MyFilter = dfilt.df1sos(filter_b,filter_a);
 MyFilter.arithmetic = 'fixed';
 % MyFilter.FilterInternals='FullPrecision';
-MyFilter.FilterInternals='SpecifyPrecision';
-MyFilter.InputWordLength = 2;
-MyFilter.InputFracLength = 0;
+% MyFilter.FilterInternals='SpecifyPrecision';
+MyFilter.InputWordLength = 10;
+MyFilter.InputFracLength = 8;
 MyFilter.OutputWordLength = 10;
-MyFilter.OutputFracLength = 8;
+% MyFilter.OutputFracLength = 8;
 % generatehdl(MyFilter);
 generatehdl(MyFilter, ...
-  'Name','hdlcoder_pulse_shaping_fir', ...
+  'Name','hdlcoder_pre_filter', ...
   'TargetLanguage','VHDL', ...
   'GenerateHDLTestbench', 'on' ...
 );
@@ -49,10 +53,6 @@ generatehdl(MyFilter, ...
 % PLOT
 %-----------------------------------------------------------
 figure();
-stem(0:length(spar.pulse)-1,spar.pulse);
-figure();
-aux = (length(spar.pulse)-1)/2;
-stem(-aux:1:aux,spar.pulse);
-grid on;
+freqz(filter_b,filter_a);
 %-----------------------------------------------------------
 

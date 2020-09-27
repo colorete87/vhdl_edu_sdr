@@ -1,9 +1,0 @@
-#!/bin/bash
-
-
-ghdl -a ../pulse_shaping_filter.vhd
-ghdl -a ../pulse_shaping_filter_tb.vhd
-
-ghdl -e pulse_shaping_filter_tb
-
-./pulse_shaping_filter_tb --fst=waves.fst
