@@ -43,6 +43,7 @@ architecture rtl of mod_control_unit is
   signal start_tx_s             : std_logic;
   signal counter_s              : std_logic_vector(7+3 downto 0);
   signal counter_srst_s         : std_logic;
+  signal base_symb_idx_s        : std_logic;
   signal internal_enable_s      : std_logic;
   signal bbm_is_rfd_s           : std_logic;
 
@@ -85,6 +86,20 @@ begin
   -- Input register enable
   u_input_reg_en :
   input_reg_en_o <= bbm_is_rfd_s and is_dv_i;
+
+  -- Base symb
+  process (clk_i)
+  begin
+    if (rising_edge(clk_i)) then
+      if srst_i = '1' then
+        base_symb_idx_s <= '0';
+      else
+        if internal_enable_s = '1' then
+          base_symb_idx_s <= not base_symb_idx_s;
+        end if;
+      end if;
+    end if;
+  end process;
 
   -- Counter
   process (clk_i)
@@ -182,9 +197,9 @@ begin
 
   -- Muxes selection
   data_symb_sel_o <= counter_s(2 downto 0);
-  out_symb_sel_o <= '0' & counter_s(0)      when state_s = S_PRE else
-                    '0' & not(counter_s(0)) when state_s = S_SFD else
-                    "10"                    when state_s = S_DATA else
+  out_symb_sel_o <= '0' & base_symb_idx_s      when state_s = S_PRE else
+                    '0' & not(base_symb_idx_s) when state_s = S_SFD else
+                    "10"                       when state_s = S_DATA else
                     "00";
   
 end rtl;
