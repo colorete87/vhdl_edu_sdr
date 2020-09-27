@@ -213,7 +213,7 @@ begin
     -- Config       
     freq_zqero_i    => std_logic_vector(to_unsigned(64,10)), -- 2^bits / (number of clocks per pulse)
     pll_kp_i        => std_logic_vector(to_unsigned(512,10)),
-    pll_ki_i        => std_logic_vector(to_unsigned(128,10)),
+    pll_ki_i        => std_logic_vector(to_unsigned(100,10)),
     -- State        
     phase_err_o     => pll_phase_err_s,
     phase_int_err_o => pll_phase_int_err_s,

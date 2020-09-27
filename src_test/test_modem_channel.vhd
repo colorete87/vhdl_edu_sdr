@@ -104,8 +104,8 @@ architecture rtl of test_modem_channel is
 
   -- Modem config
   constant nm1_bytes_c  : std_logic_vector( 7 downto 0) := X"03";
-  constant nm1_pre_c    : std_logic_vector( 7 downto 0) := X"06";
-  constant nm1_sfd_c    : std_logic_vector( 7 downto 0) := X"01";
+  constant nm1_pre_c    : std_logic_vector( 7 downto 0) := X"07";
+  constant nm1_sfd_c    : std_logic_vector( 7 downto 0) := X"03";
   constant det_th_c     : std_logic_vector(15 downto 0) := X"0400";
   constant pll_kp_c     : std_logic_vector(15 downto 0) := X"0400";
   constant pll_ki_c     : std_logic_vector(15 downto 0) := X"0100";

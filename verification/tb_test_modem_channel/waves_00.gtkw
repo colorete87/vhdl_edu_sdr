@@ -1,21 +1,21 @@
 [*]
 [*] GTKWave Analyzer v3.3.102 (w)1999-2019 BSI
-[*] Sun Sep 27 10:07:03 2020
+[*] Sun Sep 27 10:48:45 2020
 [*]
 [dumpfile] "/home/fzacchigna/fpga/proyects/vhdl_edu_bbt/verification/tb_test_modem_channel/waves.fst"
-[dumpfile_mtime] "Sun Sep 27 10:06:44 2020"
-[dumpfile_size] 1305917
+[dumpfile_mtime] "Sun Sep 27 10:47:53 2020"
+[dumpfile_size] 1282843
 [savefile] "/home/fzacchigna/fpga/proyects/vhdl_edu_bbt/verification/tb_test_modem_channel/waves_00.gtkw"
-[timestart] 12340000000
+[timestart] 0
 [size] 1920 1016
 [pos] -1 -1
-*-32.965061 37562500000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-35.965061 43250000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] dut.
 [treeopen] dut.u_modem.
 [treeopen] dut.u_modem.u_dem.
 [treeopen] dut.u_modem.u_dem.u_symb_sync.
 [sst_width] 408
-[signals_width] 245
+[signals_width] 385
 [sst_expanded] 1
 [sst_vpaned_height] 305
 @c00200
@@ -221,6 +221,16 @@ dut.u_modem.u_dem.mfd_data_s[9:0]
 @28
 dut.u_modem.u_dem.en_sample_s
 @200
+-Samples and bits
+@22
+dut.u_modem.u_dem.samples_s[9:0]
+@28
+dut.u_modem.u_dem.bit_s
+@c00200
+-dut.u_modem.u_dem.last_bits_s
+@1401200
+-group_end
+@200
 -State
 @28
 dut.u_modem.u_dem.rx_rdy_o
@@ -378,46 +388,6 @@ dut.u_modem.u_dem.u_symb_sync.u_pll.pll_sin_s[9:0]
 @1000200
 -PLL Signals
 @200
--
--
-@28
-dut.u_modem.u_dem.u_symb_sync.u_pll.en_i
-dut.u_modem.u_dem.u_symb_sync.u_pll.srst_i
-dut.u_modem.u_dem.u_symb_sync.u_pll.clk_i
-@200
--
-@20000
--
-@200
--
--
--
--
--
--
--
--
--
--
--
--
--
--
--
--
--
--
--
--
--
--
--
--
--
--
--
--
--
 -
 -
 -

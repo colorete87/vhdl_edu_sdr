@@ -83,8 +83,8 @@ architecture rtl of bb_demodulator is
   end component symb_sync;
 
   -- constants
-  constant N_PULSE : integer := 16;
-  constant N_SFD   : integer := 2;
+  constant N_PULSE   : integer := 16;
+  constant MAX_N_SFD : integer := 8;
 
   -- signals
   -- Modulator output
@@ -96,10 +96,8 @@ architecture rtl of bb_demodulator is
   signal en_sample_s   : std_logic;
   signal samples_s     : std_logic_vector( 9 downto 0);
   signal bit_s         : std_logic;
-  signal last_bits_s   : std_logic_vector(N_SFD-1 downto 0);
+  signal last_bits_s   : std_logic_vector(MAX_N_SFD-1 downto 0);
   signal bit_counter_s : std_logic_vector( 9 downto 0);
-  -- signal mfd_dv_s   : std_logic;
-  -- signal mfd_rfd_s  : std_logic;
 
 
 begin
@@ -162,7 +160,7 @@ begin
         if en_sample_s = '1' then
           samples_s   <= mfd_data_s;
           bit_s       <= mfd_data_s(9);
-          last_bits_s <= mfd_data_s(9) & last_bits_s(N_SFD-1 downto 1);
+          last_bits_s <= mfd_data_s(9) & last_bits_s(last_bits_s'high downto 1);
         end if;
       end if;
     end if;
@@ -175,7 +173,7 @@ begin
         bit_counter_s <= (others => '0');
       else
         if en_sample_s = '1' then
-          bit_counter_s <= mfd_data_s(9);
+          -- bit_counter_s <= mfd_data_s(9);
         end if;
       end if;
     end if;

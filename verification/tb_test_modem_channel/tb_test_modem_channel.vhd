@@ -108,7 +108,8 @@ begin
     variable byte_v : integer := 255;
     variable l      : line;
   begin
-    tb_dut_is_data_i <= std_logic_vector(to_unsigned(byte_v,8));
+    -- tb_dut_is_data_i <= std_logic_vector(to_unsigned(byte_v,8));
+    tb_dut_is_data_i <= "01110001";
     if rising_edge(tb_dut_clk_i) then
       if tb_dut_is_rfd_o = '1' then
         report "[INFO] Byte número:" & integer'image(i_v);
