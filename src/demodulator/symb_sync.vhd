@@ -16,6 +16,9 @@ entity symb_sync is
     is_data_i     : in  std_logic_vector( 9 downto 0);
     is_dv_i       : in  std_logic;
     is_rfd_o      : out std_logic;
+    -- Config
+    pll_kp_i      : in  std_logic_vector(15 downto 0);
+    pll_ki_i      : in  std_logic_vector(15 downto 0);
     -- Output
     en_sample_o   : out std_logic;
     -- State
@@ -101,12 +104,12 @@ architecture rtl of symb_sync is
   signal pf_s                 : std_logic_vector( 9 downto 0);
   signal pf_sq_s              : std_logic_vector(12 downto 0);
   signal pf_sq_bpf_s          : std_logic_vector(19 downto 0);
-  signal pll_input_s          : std_logic_vector( 9 downto 0);
-  signal pll_os_sin_s         : std_logic_vector( 9 downto 0);
-  signal pll_os_cos_s         : std_logic_vector( 9 downto 0);
-  signal pll_phase_err_s      : std_logic_vector( 9 downto 0);
-  signal pll_phase_int_err_s  : std_logic_vector( 9 downto 0);
-  signal pll_phase_s          : std_logic_vector( 9 downto 0);
+  signal pll_input_s          : std_logic_vector(15 downto 0);
+  signal pll_os_sin_s         : std_logic_vector(15 downto 0);
+  signal pll_os_cos_s         : std_logic_vector(15 downto 0);
+  signal pll_phase_err_s      : std_logic_vector(15 downto 0);
+  signal pll_phase_int_err_s  : std_logic_vector(15 downto 0);
+  signal pll_phase_s          : std_logic_vector(15 downto 0);
   signal clk_i_s              : std_logic;
   signal clk_q_s              : std_logic;
   signal clk_i_1d_s           : std_logic;
@@ -115,6 +118,8 @@ architecture rtl of symb_sync is
 begin
 
   internal_enbale_s <= en_i and is_dv_i;
+
+  is_rfd_o <= '1';
 
   -- Pre-filter
   u_pre_filter : pre_filter
@@ -193,11 +198,11 @@ begin
   -- end process;
 
   -- PLL
-  pll_input_s <= pf_sq_bpf_s(14 downto 5); -- TODO: Hardcoded
+  pll_input_s <= pf_sq_bpf_s(17 downto 2); -- TODO: Hardcoded
   u_pll : pll
   generic map
   (
-    WORD_WIDTH        => 10
+    WORD_WIDTH        => 16
   )
   port map
   (
@@ -211,9 +216,9 @@ begin
     os_sin_o        => pll_os_sin_s,
     os_cos_o        => pll_os_cos_s,
     -- Config       
-    freq_zqero_i    => std_logic_vector(to_unsigned(64,10)), -- 2^bits / (number of clocks per pulse)
-    pll_kp_i        => std_logic_vector(to_unsigned(512,10)),
-    pll_ki_i        => std_logic_vector(to_unsigned(100,10)),
+    freq_zqero_i    => std_logic_vector(to_unsigned(4096,16)), -- f_0 = 2^bits/(number of clocks per pulse)
+    pll_kp_i        => pll_kp_i,
+    pll_ki_i        => pll_ki_i,
     -- State        
     phase_err_o     => pll_phase_err_s,
     phase_int_err_o => pll_phase_int_err_s,
@@ -221,8 +226,8 @@ begin
   );
 
   -- clks
-  clk_i_s <= pll_os_cos_s(9);
-  clk_q_s <= pll_os_sin_s(9);
+  clk_i_s <= pll_os_cos_s(pll_os_cos_s'high);
+  clk_q_s <= pll_os_sin_s(pll_os_sin_s'high);
   u_clk_d : process(clk_i)
   begin
     if rising_edge(clk_i) then
