@@ -107,7 +107,7 @@ begin
       else
         if en_i = '1' then
           aux_v := pll_cos_s * signed(is_data_i);
-          phase_est_s <= aux_v(2*WORD_WIDTH-1 downto WORD_WIDTH-0);
+          phase_est_s <= aux_v(2*WORD_WIDTH-2 downto WORD_WIDTH-1);
         end if;
       end if;
     end if;
@@ -118,7 +118,7 @@ begin
     variable aux_v : signed (2*WORD_WIDTH downto 0);
   begin
     aux_v := phase_est_s * signed('0' & pll_kp_s);
-    prop_err_s <= aux_v(2*WORD_WIDTH-1 downto WORD_WIDTH-0);
+    prop_err_s <= aux_v(2*WORD_WIDTH-2 downto WORD_WIDTH-1);
   end process;
 
   -- Integral error
@@ -131,7 +131,7 @@ begin
       else
         if en_i = '1' then
           aux_v := phase_est_s * signed('0' & pll_ki_s);
-          int_err_s <= int_err_s + aux_v(2*WORD_WIDTH-1 downto WORD_WIDTH-0);
+          int_err_s <= int_err_s + aux_v(2*WORD_WIDTH-2 downto WORD_WIDTH-1);
         end if;
       end if;
     end if;
