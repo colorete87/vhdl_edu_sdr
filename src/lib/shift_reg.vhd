@@ -8,10 +8,10 @@ entity shift_reg is
     sr_width : integer
   );
   port (
-    clk : in std_logic;
-    rst : in std_logic; -- Optional
- 
-    sr_in : in std_logic_vector(sr_width - 1 downto 0);
+    clk    : in  std_logic;
+    rst    : in  std_logic; -- Optional
+    en     : in  std_logic;
+    sr_in  : in  std_logic_vector(sr_width - 1 downto 0);
     sr_out : out std_logic_vector(sr_width - 1 downto 0)
   );
 end;
@@ -33,12 +33,14 @@ begin
         rst_counter <= 0;
         sr_out <= (others => '0');
       else
-        sr <= sr(sr'high - 1 downto sr'low) & sr_in;
-        if rst_counter = sr_depth - 1 then
-          sr_out <= sr(sr'high);
-        else
-          rst_counter <= rst_counter + 1;
-          sr_out <= (others => '0');
+        if en = '1' then
+          sr <= sr(sr'high - 1 downto sr'low) & sr_in;
+          if rst_counter = sr_depth - 1 then
+            sr_out <= sr(sr'high);
+          else
+            rst_counter <= rst_counter + 1;
+            sr_out <= (others => '0');
+          end if;
         end if;
       end if;
     end if;
