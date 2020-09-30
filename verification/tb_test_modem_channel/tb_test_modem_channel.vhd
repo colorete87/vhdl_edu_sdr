@@ -46,7 +46,7 @@ architecture rtl of tb_test_modem_channel is
   signal tb_dut_tx_rdy_o   : std_logic;
 
   constant SAMPLE_PERIOD   : time    := 62500 ps;
-  constant N_TX            : integer := 3;
+  constant N_TX            : integer := 10;
   constant N_ZEROS         : integer := 123;
                              
 begin
@@ -107,14 +107,18 @@ begin
     variable i_v    : integer := 0;
     variable byte_v : integer := 255;
     variable l      : line;
+    variable aux_v  : std_logic_vector(7 downto 0) := "01101010";
   begin
     -- tb_dut_is_data_i <= std_logic_vector(to_unsigned(byte_v,8));
-    tb_dut_is_data_i <= "01110001";
+    -- tb_dut_is_data_i <= "01110001";
+    -- tb_dut_is_data_i <= "01010011";
+    tb_dut_is_data_i <= aux_v;
     if rising_edge(tb_dut_clk_i) then
       if tb_dut_is_rfd_o = '1' then
         report "[INFO] Byte número:" & integer'image(i_v);
         i_v    := i_v+1;
         byte_v := byte_v-1;
+        aux_v  := not(aux_v);
       end  if;
     end if;
     if i_v >= N_TX*4 and tb_dut_tx_rdy_o = '1' then
@@ -145,6 +149,16 @@ begin
     tb_dut_os_rfd_i   <= '1';
     wait;
   end process;
+  -- process(tb_dut_clk_i)
+  -- begin
+  --   if rising_edge(tb_dut_clk_i) then
+  --     if tb_dut_srst_i = '1' then
+  --       tb_dut_os_rfd_i <= '0';
+  --     else
+  --       tb_dut_os_rfd_i <= tb_dut_os_dv_o;
+  --     end if;
+  --   end if;
+  -- end process;
   ------------------------------------------------------------
   -- END STIMULUS
   ------------------------------------------------------------
