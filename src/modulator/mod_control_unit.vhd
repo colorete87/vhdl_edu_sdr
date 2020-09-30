@@ -1,4 +1,3 @@
-
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
@@ -87,7 +86,7 @@ begin
   u_input_reg_en :
   input_reg_en_o <= bbm_is_rfd_s and is_dv_i;
 
-  -- Base symb
+  -- Base symbol index
   process (clk_i)
   begin
     if (rising_edge(clk_i)) then
@@ -95,7 +94,20 @@ begin
         base_symb_idx_s <= '0';
       else
         if internal_enable_s = '1' then
-          base_symb_idx_s <= not base_symb_idx_s;
+          -- if start_tx_s = '1' then
+          --   base_symb_idx_s <= '0';
+          -- else
+          --   base_symb_idx_s <= not base_symb_idx_s;
+          -- end if;
+          if
+            state_s = S_INIT or
+            state_s = S_WAIT or
+            state_s = S_DATA
+          then
+            base_symb_idx_s <= '0';
+          else
+            base_symb_idx_s <= not base_symb_idx_s;
+          end if;
         end if;
       end if;
     end if;
@@ -186,10 +198,10 @@ begin
       when S_PRE =>
       when S_SFD =>
         if counter_s(7 downto 0) = nm1_sfd_i then
-          bbm_is_rfd_s <=  en_i and map_is_rfd_i and internal_enable_s;
+          bbm_is_rfd_s <= en_i and map_is_rfd_i and internal_enable_s;
         end if;
       when S_DATA =>
-        if counter_s(2 downto 0) = "111" then
+        if counter_s(2 downto 0) = "111" and counter_srst_s = '0' then
           bbm_is_rfd_s <= en_i and map_is_rfd_i and internal_enable_s;
         end if;
     end case;
@@ -203,3 +215,4 @@ begin
                     "00";
   
 end rtl;
+

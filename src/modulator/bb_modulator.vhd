@@ -144,6 +144,8 @@ architecture rtl of bb_modulator is
   signal za_os_dv_s     : std_logic;
   signal za_os_rfd_s    : std_logic;
 
+  -- signal za_srst_s      : std_logic; -- TODO for desynchronization of different TXs 
+
 begin
 
   -- Input Register
