@@ -39,7 +39,7 @@ entity bb_modem is
     send_i           : in  std_logic;
     -- State      
     tx_rdy_o         : out std_logic;
-    rx_rdy_o         : out std_logic
+    rx_ovf_o         : out std_logic
   );
 end entity bb_modem;
 
@@ -93,7 +93,7 @@ architecture rtl of bb_modem is
       det_th_i      : in  std_logic_vector(15 downto 0);
       pll_kp_i      : in  std_logic_vector(15 downto 0);
       pll_ki_i      : in  std_logic_vector(15 downto 0);
-      rx_rdy_o      : out std_logic
+      rx_ovf_o      : out std_logic
     );
   end component bb_demodulator;
 
@@ -146,7 +146,7 @@ begin
     det_th_i      => det_th_i,
     pll_kp_i      => pll_kp_i,
     pll_ki_i      => pll_ki_i,
-    rx_rdy_o      => rx_rdy_o
+    rx_ovf_o      => rx_ovf_o
   );
 
 end architecture rtl;
