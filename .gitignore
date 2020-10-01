@@ -57,4 +57,5 @@ verification/*/*.o
 verification/*/*.fst
 verification/*/*.cf
 hw/vivado_ws
+work-obj93.cf
 
