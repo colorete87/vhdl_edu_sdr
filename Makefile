@@ -14,6 +14,7 @@ DATA_FILES =
 
 SRC_DIRS  = ./src
 SRC_DIRS += ./src/lib
+SRC_DIRS += ./src/top
 SRC_DIRS += ./src/modulator
 SRC_DIRS += ./src/modulator/pulse_shaping
 SRC_DIRS += ./src/channel/
@@ -22,7 +23,6 @@ SRC_DIRS += ./src/channel/prng
 SRC_DIRS += ./src/demodulator
 SRC_DIRS += ./src/demodulator/matched_filter
 SRC_DIRS += ./src/demodulator/pll
-SRC_DIRS += ./src/demodulator/cordic
 SRC_DIRS += ./src/demodulator/pre_filter
 SRC_DIRS += ./src/demodulator/bandpass_filter
 SRC_DIRS += ./src_test
