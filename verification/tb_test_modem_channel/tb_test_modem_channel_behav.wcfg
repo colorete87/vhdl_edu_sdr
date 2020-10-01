@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="tb_test_modem_channel_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="tb_test_modem_channel" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="49210833334fs"></ZoomStartTime>
+      <ZoomEndTime time="55445833335fs"></ZoomEndTime>
+      <Cursor1Time time="50250000000fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="175"></NameColumnWidth>
+      <ValueColumnWidth column_width="142"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="24" />
+   <wvobject type="logic" fp_name="/tb_test_modem_channel/tb_dut_clk_i">
+      <obj_property name="ElementShortName">tb_dut_clk_i</obj_property>
+      <obj_property name="ObjectShortName">tb_dut_clk_i</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_test_modem_channel/tb_dut_en_i">
+      <obj_property name="ElementShortName">tb_dut_en_i</obj_property>
+      <obj_property name="ObjectShortName">tb_dut_en_i</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_test_modem_channel/tb_dut_srst_i">
+      <obj_property name="ElementShortName">tb_dut_srst_i</obj_property>
+      <obj_property name="ObjectShortName">tb_dut_srst_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="divider17" type="divider">
+      <obj_property name="label">Input Stream</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_test_modem_channel/tb_dut_is_data_i">
+      <obj_property name="ElementShortName">tb_dut_is_data_i[7:0]</obj_property>
+      <obj_property name="ObjectShortName">tb_dut_is_data_i[7:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_test_modem_channel/tb_dut_is_data_i">
+      <obj_property name="ElementShortName">tb_dut_is_data_i[7:0]</obj_property>
+      <obj_property name="ObjectShortName">tb_dut_is_data_i[7:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      <obj_property name="WaveformStyle">STYLE_ANALOG</obj_property>
+      <obj_property name="CellHeight">100</obj_property>
+      <obj_property name="AnalogYRangeType">ANALOG_YRANGETYPE_AUTO</obj_property>
+      <obj_property name="AnalogYRangeMin">0.000000</obj_property>
+      <obj_property name="AnalogYRRangeMax">0.000000</obj_property>
+      <obj_property name="AnalogInterpolation">ANALOG_INTERPOLATION_HOLD</obj_property>
+      <obj_property name="AnalogOffscale">ANALOG_OFFSCALE_HIDE</obj_property>
+      <obj_property name="AnalogHorizLine">0.000000</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_test_modem_channel/tb_dut_is_dv_i">
+      <obj_property name="ElementShortName">tb_dut_is_dv_i</obj_property>
+      <obj_property name="ObjectShortName">tb_dut_is_dv_i</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_test_modem_channel/tb_dut_is_rfd_o">
+      <obj_property name="ElementShortName">tb_dut_is_rfd_o</obj_property>
+      <obj_property name="ObjectShortName">tb_dut_is_rfd_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="divider17" type="divider">
+      <obj_property name="label">Output Stream</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_test_modem_channel/tb_dut_os_data_o">
+      <obj_property name="ElementShortName">tb_dut_os_data_o[7:0]</obj_property>
+      <obj_property name="ObjectShortName">tb_dut_os_data_o[7:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_test_modem_channel/tb_dut_os_data_o">
+      <obj_property name="ElementShortName">tb_dut_os_data_o[7:0]</obj_property>
+      <obj_property name="ObjectShortName">tb_dut_os_data_o[7:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      <obj_property name="WaveformStyle">STYLE_ANALOG</obj_property>
+      <obj_property name="CellHeight">100</obj_property>
+      <obj_property name="AnalogYRangeType">ANALOG_YRANGETYPE_AUTO</obj_property>
+      <obj_property name="AnalogYRangeMin">0.000000</obj_property>
+      <obj_property name="AnalogYRRangeMax">0.000000</obj_property>
+      <obj_property name="AnalogInterpolation">ANALOG_INTERPOLATION_HOLD</obj_property>
+      <obj_property name="AnalogOffscale">ANALOG_OFFSCALE_HIDE</obj_property>
+      <obj_property name="AnalogHorizLine">0.000000</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_test_modem_channel/tb_dut_os_dv_o">
+      <obj_property name="ElementShortName">tb_dut_os_dv_o</obj_property>
+      <obj_property name="ObjectShortName">tb_dut_os_dv_o</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_test_modem_channel/tb_dut_os_rfd_i">
+      <obj_property name="ElementShortName">tb_dut_os_rfd_i</obj_property>
+      <obj_property name="ObjectShortName">tb_dut_os_rfd_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="divider17" type="divider">
+      <obj_property name="label">State</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_test_modem_channel/tb_dut_tx_rdy_o">
+      <obj_property name="ElementShortName">tb_dut_tx_rdy_o</obj_property>
+      <obj_property name="ObjectShortName">tb_dut_tx_rdy_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="divider22" type="divider">
+      <obj_property name="label">TestBench</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/tb_test_modem_channel/tb_clock_counter_s">
+      <obj_property name="ElementShortName">tb_clock_counter_s</obj_property>
+      <obj_property name="ObjectShortName">tb_clock_counter_s</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_test_modem_channel/tb_dut_os_dv_o">
+      <obj_property name="ElementShortName">tb_dut_os_dv_o</obj_property>
+      <obj_property name="ObjectShortName">tb_dut_os_dv_o</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_test_modem_channel/dut_os_dv_d1_s">
+      <obj_property name="ElementShortName">dut_os_dv_d1_s</obj_property>
+      <obj_property name="ObjectShortName">dut_os_dv_d1_s</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_test_modem_channel/dut_os_dv_flank_s">
+      <obj_property name="ElementShortName">dut_os_dv_flank_s</obj_property>
+      <obj_property name="ObjectShortName">dut_os_dv_flank_s</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_test_modem_channel/os_dv_delay_s">
+      <obj_property name="ElementShortName">os_dv_delay_s[8:0]</obj_property>
+      <obj_property name="ObjectShortName">os_dv_delay_s[8:0]</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/tb_test_modem_channel/SAMPLE_PERIOD">
+      <obj_property name="ElementShortName">SAMPLE_PERIOD</obj_property>
+      <obj_property name="ObjectShortName">SAMPLE_PERIOD</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/tb_test_modem_channel/N_TX">
+      <obj_property name="ElementShortName">N_TX</obj_property>
+      <obj_property name="ObjectShortName">N_TX</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/tb_test_modem_channel/N_ZEROS">
+      <obj_property name="ElementShortName">N_ZEROS</obj_property>
+      <obj_property name="ObjectShortName">N_ZEROS</obj_property>
+   </wvobject>
+</wave_config>

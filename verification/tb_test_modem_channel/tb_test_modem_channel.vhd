@@ -29,7 +29,8 @@ architecture rtl of tb_test_modem_channel is
       os_dv_o       : out std_logic;
       os_rfd_i      : in  std_logic;
       -- Others
-      tx_rdy_o      : out std_logic
+      tx_rdy_o      : out std_logic;
+      rx_ovf_o      : out std_logic
     );
   end component test_modem_channel;
 
@@ -44,12 +45,28 @@ architecture rtl of tb_test_modem_channel is
   signal tb_dut_os_dv_o    : std_logic;
   signal tb_dut_os_rfd_i   : std_logic;
   signal tb_dut_tx_rdy_o   : std_logic;
+  signal tb_dut_rx_ovf_o   : std_logic;
+
+  signal tb_clock_counter_s : integer := 0;
+  signal os_dv_delay_s      : std_logic_vector(8 downto 0);
+  signal dut_os_dv_d1_s     : std_logic;
+  signal dut_os_dv_flank_s  : std_logic;
 
   constant SAMPLE_PERIOD   : time    := 62500 ps;
-  constant N_TX            : integer := 10;
+  constant N_TX            : integer := 2;
   constant N_ZEROS         : integer := 123;
                              
 begin
+
+  ------------------------------------------------------------
+  -- Clock counter (DEBUG)
+  u_clk_counter : process(tb_dut_clk_i)
+  begin
+    if rising_edge(tb_dut_clk_i) then
+      tb_clock_counter_s <= tb_clock_counter_s + 1;
+    end if;
+  end process;
+  ------------------------------------------------------------
 
   ------------------------------------------------------------
   -- BEGIN DUT
@@ -69,7 +86,8 @@ begin
     os_dv_o       => tb_dut_os_dv_o,
     os_rfd_i      => tb_dut_os_rfd_i,
     -- Others
-    tx_rdy_o      => tb_dut_tx_rdy_o
+    tx_rdy_o      => tb_dut_tx_rdy_o,
+    rx_ovf_o      => tb_dut_rx_ovf_o
   );
   ------------------------------------------------------------
   -- END DUT
@@ -94,6 +112,10 @@ begin
     wait for 3*SAMPLE_PERIOD;
     tb_dut_en_i       <= '1';
     tb_dut_srst_i     <= '0';
+--    wait for 1500*SAMPLE_PERIOD;
+--    tb_dut_srst_i     <= '1';
+--    wait for 3*SAMPLE_PERIOD;
+--    tb_dut_srst_i     <= '0';
     wait;
   end process;
   --
@@ -109,10 +131,10 @@ begin
     variable l      : line;
     variable aux_v  : std_logic_vector(7 downto 0) := "01101010";
   begin
-    -- tb_dut_is_data_i <= std_logic_vector(to_unsigned(byte_v,8));
+    tb_dut_is_data_i <= std_logic_vector(to_unsigned(byte_v,8));
     -- tb_dut_is_data_i <= "01110001";
     -- tb_dut_is_data_i <= "01010011";
-    tb_dut_is_data_i <= aux_v;
+    -- tb_dut_is_data_i <= aux_v;
     if rising_edge(tb_dut_clk_i) then
       if tb_dut_is_rfd_o = '1' then
         report "[INFO] Byte número:" & integer'image(i_v);
@@ -144,21 +166,26 @@ begin
   -- Output Stream Stimulus
   -- Signals:
   -- * tb_dut_os_rfd_i
-  process
-  begin
-    tb_dut_os_rfd_i   <= '1';
-    wait;
-  end process;
-  -- process(tb_dut_clk_i)
+  -- process
   -- begin
-  --   if rising_edge(tb_dut_clk_i) then
-  --     if tb_dut_srst_i = '1' then
-  --       tb_dut_os_rfd_i <= '0';
-  --     else
-  --       tb_dut_os_rfd_i <= tb_dut_os_dv_o;
-  --     end if;
-  --   end if;
+  --   tb_dut_os_rfd_i   <= '1';
+  --   wait;
   -- end process;
+  process(tb_dut_clk_i)
+  begin
+    if rising_edge(tb_dut_clk_i) then
+      if tb_dut_srst_i = '1' then
+        tb_dut_os_rfd_i <= '0';
+        dut_os_dv_d1_s  <= '0';
+        os_dv_delay_s   <= (others => '0');
+      else
+        tb_dut_os_rfd_i   <= os_dv_delay_s(os_dv_delay_s'high);
+        dut_os_dv_d1_s    <= tb_dut_os_dv_o;
+        os_dv_delay_s     <= os_dv_delay_s(os_dv_delay_s'high-1 downto 0) & dut_os_dv_flank_s;
+      end if;
+    end if;
+  end process;
+  dut_os_dv_flank_s <= not dut_os_dv_d1_s and tb_dut_os_dv_o;
   ------------------------------------------------------------
   -- END STIMULUS
   ------------------------------------------------------------

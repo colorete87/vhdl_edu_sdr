@@ -21,7 +21,8 @@ entity test_modem_channel is
     os_dv_o       : out std_logic;
     os_rfd_i      : in  std_logic;
     -- Others
-    tx_rdy_o      : out std_logic
+    tx_rdy_o      : out std_logic;
+    rx_ovf_o      : out std_logic
   );
 end entity test_modem_channel;
 
@@ -110,7 +111,7 @@ architecture rtl of test_modem_channel is
   constant pll_kp_c     : std_logic_vector(15 downto 0) := X"A000";
   constant pll_ki_c     : std_logic_vector(15 downto 0) := X"9000";
   -- Channel config
-  constant sigma_c      : std_logic_vector(15 downto 0) := X"0000"; -- QU16.12
+  constant sigma_c      : std_logic_vector(15 downto 0) := X"0040"; -- QU16.12
 
   signal counter_s : integer;
 
@@ -118,6 +119,7 @@ begin
 
   -- Modem State
   tx_rdy_o <= tx_rdy_s;
+  rx_ovf_o <= rx_ovf_s;
 
   -- Modem Control
   u_modem_control : process(clk_i)

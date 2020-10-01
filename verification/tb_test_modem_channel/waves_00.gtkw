@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.3.102 (w)1999-2019 BSI
-[*] Wed Sep 30 07:19:36 2020
+[*] Wed Sep 30 07:41:36 2020
 [*]
 [dumpfile] "/home/fzacchigna/fpga/proyects/vhdl_edu_bbt/verification/tb_test_modem_channel/waves.fst"
-[dumpfile_mtime] "Wed Sep 30 07:16:23 2020"
-[dumpfile_size] 1969259
+[dumpfile_mtime] "Wed Sep 30 07:39:54 2020"
+[dumpfile_size] 3861719
 [savefile] "/home/fzacchigna/fpga/proyects/vhdl_edu_bbt/verification/tb_test_modem_channel/waves_00.gtkw"
-[timestart] 15370000000
+[timestart] 0
 [size] 1920 1016
 [pos] -1 -1
-*-33.965061 58250000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-38.965061 459500000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] dut.
 [treeopen] dut.u_modem.
 [treeopen] dut.u_modem.u_dem.
@@ -466,15 +466,21 @@ dut.u_modem.u_dem.byte_s[7:0]
 dut.u_modem.u_dem.new_byte_s
 @1401200
 -Bytes
-@c00200
+@800200
 -Output Data
 @22
 dut.u_modem.u_dem.os_data_o[7:0]
+@24
+dut.u_modem.u_dem.os_data_o[7:0]
+@8024
+dut.u_modem.u_dem.os_data_o[7:0]
+@20000
+-
 @28
 dut.u_modem.u_dem.os_dv_o
 dut.u_modem.u_dem.os_rfd_i
 dut.u_modem.u_dem.rx_ovf_o
-@1401200
+@1000200
 -Output Data
 [pattern_trace] 1
 [pattern_trace] 0
