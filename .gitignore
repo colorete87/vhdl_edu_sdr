@@ -55,4 +55,5 @@ verification/tb_pll/tb_pll
 verification/*/*.o
 verification/*/*.fst
 verification/*/*.cf
+hw/vivado_ws
 
