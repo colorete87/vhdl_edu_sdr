@@ -10,7 +10,7 @@ E_pulse = 1e-6;
 %-----------------------------------------------------------
 
 
-[pulse n_fir] = pulse(Ts,Tsymb,'rc');
+[pulse n_fir] = pulse(Ts,Tsymb,'rrc');
 
 
 spar.Tsymb   = Tsymb;
