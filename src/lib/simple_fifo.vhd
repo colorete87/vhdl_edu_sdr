@@ -1,0 +1,140 @@
+library ieee;
+use ieee.std_logic_1164.all;
+
+entity simple_fifo is
+  generic (
+    RESET_ACTIVE_LEVEL : std_ulogic := '1';
+    MEM_SIZE           : positive;
+    SYNC_READ          : boolean    := true
+    );
+  port (
+    Clock   : in std_ulogic;
+    Reset   : in std_ulogic;
+    We      : in std_ulogic;  --# Write enable
+    Wr_data : in std_ulogic_vector;
+
+    Re      : in  std_ulogic;
+    Rd_data : out std_ulogic_vector;
+
+    Empty : out std_ulogic;
+    Full  : out std_ulogic;
+
+    Almost_empty_thresh : in  natural range 0 to MEM_SIZE-1 := 1;
+    Almost_full_thresh  : in  natural range 0 to MEM_SIZE-1 := 1;
+    Almost_empty        : out std_ulogic;
+    Almost_full         : out std_ulogic
+    );
+end entity;
+
+architecture rtl of simple_fifo is
+
+  signal head, tail : natural range 0 to MEM_SIZE-1;
+  signal dpr_we     : std_ulogic;
+  signal wraparound : boolean;
+
+  signal empty_loc, full_loc : std_ulogic;
+begin
+
+  dpr : dual_port_ram
+    generic map (
+      MEM_SIZE  => MEM_SIZE,
+      SYNC_READ => SYNC_READ
+      )
+    port map (
+      Wr_clock => Clock,
+      We       => dpr_we,
+      Wr_addr  => head,
+      Wr_data  => Wr_data,
+
+      Rd_clock => Clock,
+      Re       => Re,
+      Rd_addr  => tail,
+      Rd_data  => Rd_data
+      );
+
+  dpr_we <= '1' when we = '1' and full_loc = '0' else '0';
+
+  wr_rd : process(Clock, Reset) is
+    variable head_v, tail_v : natural range 0 to MEM_SIZE-1;
+    variable wraparound_v   : boolean;
+  begin
+
+    if Reset = RESET_ACTIVE_LEVEL then
+      head         <= 0;
+      tail         <= 0;
+      full_loc     <= '0';
+      empty_loc    <= '1';
+      Almost_full  <= '0';
+      Almost_empty <= '0';
+
+      wraparound <= false;
+
+    elsif rising_edge(Clock) then
+      head_v       := head;
+      tail_v       := tail;
+      wraparound_v := wraparound;
+
+      if We = '1' and (wraparound = false or head /= tail) then
+        
+        if head_v = MEM_SIZE-1 then
+          head_v       := 0;
+          wraparound_v := true;
+        else
+          head_v := head_v + 1;
+        end if;
+      end if;
+
+      if Re = '1' and (wraparound = true or head /= tail) then
+        if tail_v = MEM_SIZE-1 then
+          tail_v       := 0;
+          wraparound_v := false;
+        else
+          tail_v := tail_v + 1;
+        end if;
+      end if;
+
+
+      if head_v /= tail_v then
+        empty_loc <= '0';
+        full_loc  <= '0';
+      else
+        if wraparound_v then
+          full_loc <= '1';
+          empty_loc <= '0';
+        else
+          full_loc <= '0';
+          empty_loc <= '1';
+        end if;
+      end if;
+
+      Almost_full  <= '0';
+      Almost_empty <= '0';
+      if head_v /= tail_v then
+        if head_v > tail_v then
+          if Almost_full_thresh >= MEM_SIZE - (head_v - tail_v) then
+            Almost_full <= '1';
+          end if;
+          if Almost_empty_thresh >= head_v - tail_v then
+            Almost_empty <= '1';
+          end if;
+        else
+          if Almost_full_thresh >= tail_v - head_v then
+            Almost_full <= '1';
+          end if;
+          if Almost_empty_thresh >= MEM_SIZE - (tail_v - head_v) then
+            Almost_empty <= '1';
+          end if;
+        end if;
+      end if;
+
+
+      head       <= head_v;
+      tail       <= tail_v;
+      wraparound <= wraparound_v;
+    end if;
+  end process;
+
+  Empty <= empty_loc;
+  Full  <= full_loc;
+
+end architecture;

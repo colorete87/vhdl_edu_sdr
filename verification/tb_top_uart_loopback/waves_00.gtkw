@@ -1,0 +1,100 @@
+[*]
+[*] GTKWave Analyzer v3.3.102 (w)1999-2019 BSI
+[*] Thu Oct  1 08:06:10 2020
+[*]
+[dumpfile] "/home/fzacchigna/sdc/repo/vhdl_edu_bbt/verification/tb_top_uart_loopback/waves.fst"
+[dumpfile_mtime] "Thu Oct  1 07:59:50 2020"
+[dumpfile_size] 12764
+[savefile] "/home/fzacchigna/sdc/repo/vhdl_edu_bbt/verification/tb_top_uart_loopback/waves_00.gtkw"
+[timestart] 0
+[size] 1920 1016
+[pos] -1 -1
+*-39.000000 328000000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] u_dut.
+[sst_width] 351
+[signals_width] 126
+[sst_expanded] 1
+[sst_vpaned_height] 286
+@c00200
+-TestBench
+@28
+tb_dut_clk_i
+tb_dut_arst_i
+@24
+tb_clock_counter_s[31:0]
+@8024
+tb_clock_counter_s[31:0]
+@20000
+-
+@200
+-DUT
+@28
+tb_dut_rx_i
+tb_dut_tx_o
+@200
+-TX
+@28
+tb_uart_tx
+tb_uart_tx_busy
+@22
+tb_uart_tx_data[7:0]
+@28
+tb_uart_tx_en
+@200
+-RX
+@28
+tb_uart_rx
+tb_uart_rx_busy
+@22
+tb_uart_rx_data[7:0]
+@28
+tb_uart_rx_error
+@1401200
+-TestBench
+@200
+-
+@c00201
+-DUT
+@28
+u_dut.arst_i
+u_dut.clk_i
+u_dut.srst_s
+@200
+-
+@28
+u_dut.rx_i
+u_dut.tx_o
+@200
+-
+@22
+u_dut.rx_data_s[7:0]
+@28
+u_dut.rx_busy_s
+u_dut.rx_busy_d1_s
+u_dut.uart_new_rx_data_s
+@200
+-
+@22
+u_dut.uart_os_data_s[7:0]
+@28
+u_dut.uart_os_dv_s
+u_dut.uart_os_rfd_s
+u_dut.uart_rx_ovf_o
+@200
+-
+@22
+u_dut.uart_is_data_s[7:0]
+@28
+u_dut.uart_is_dv_s
+u_dut.uart_is_rfd_s
+@200
+-
+@22
+u_dut.tx_data_s[7:0]
+@28
+u_dut.tx_en_s
+u_dut.tx_busy_s
+@1401201
+-DUT
+[pattern_trace] 1
+[pattern_trace] 0

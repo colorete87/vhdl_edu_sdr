@@ -52,8 +52,10 @@ Thumbs.db
 verification/tb_bb_modulator/tb_bb_modulator
 verification/tb_test_modem_channel/tb_test_modem_channel
 verification/tb_pll/tb_pll
+verification/tb_top_uart_loopback/tb_top_uart_loopback
 verification/*/*.o
 verification/*/*.fst
 verification/*/*.cf
 hw/vivado_ws
+work-obj93.cf
 

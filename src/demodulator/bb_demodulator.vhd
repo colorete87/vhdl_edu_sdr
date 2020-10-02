@@ -118,6 +118,9 @@ architecture rtl of bb_demodulator is
   signal mf_data_d_s      : std_logic_vector(9 downto 0);
   signal mf_sq_s          : std_logic_vector(9 downto 0);
 
+  -- Shift register
+  signal sr_en_s          : std_logic;
+
   -- Signal detection
   signal signal_det_aux_s : std_logic;
   signal signal_det_s     : std_logic;
@@ -135,9 +138,11 @@ architecture rtl of bb_demodulator is
   signal bit_counter_s    : std_logic_vector(10 downto 0);
   signal data_det_s       : std_logic;
 
+  -- Byte signals
   signal byte_s           : std_logic_vector(7 downto 0);
   signal new_byte_s       : std_logic;
 
+  -- Output signals
   signal os_dv_s          : std_logic;
                           
 begin
@@ -159,6 +164,8 @@ begin
     os_rfd_i      => mf_rfd_s
   );
 
+  -- Shift Register
+  sr_en_s <= en_i and mf_dv_s and mf_rfd_s;
   u_shift_reg : shift_reg
   generic map (
     sr_depth => 5,
@@ -167,7 +174,7 @@ begin
   port map (
     clk    => clk_i,
     rst    => srst_i,
-    en     => en_i,
+    en     => sr_en_s,
     sr_in  => mf_data_s,
     sr_out => mf_data_d_s
   );
@@ -192,6 +199,7 @@ begin
     locked_o      => open
   );
 
+  -- Sampler
   u_sampler : process(clk_i)
   begin
     if rising_edge(clk_i) then
@@ -226,7 +234,7 @@ begin
   end process;
   signal_det_aux_s <='1' when unsigned(mf_sq_s) > unsigned(det_th_i) else '0';
   -- Persistent signal detection
-  process (clk_i)
+  u_sq_persistent : process (clk_i)
     variable counter_v   : integer;
     constant PERSISTENCE : integer := N_PULSE/2;
   begin
@@ -308,7 +316,7 @@ begin
   end process;
 
   -- Output Stream data valid
-  u_os_dv : process(clk_i)
+  u_os_if : process(clk_i)
   begin
     if rising_edge(clk_i) then
       if srst_i = '1' then
