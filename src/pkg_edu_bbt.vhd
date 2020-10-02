@@ -17,7 +17,7 @@ package pkg_edu_bbt is
     );
   end component top_uart_loopback;
 
-  component uart IS
+  component uart is
     generic(
       clk_freq  : integer    := 50_000_000;  --frequency of system clock in Hertz
       baud_rate : integer    := 19_200;      --data link baud rate in bits/second
