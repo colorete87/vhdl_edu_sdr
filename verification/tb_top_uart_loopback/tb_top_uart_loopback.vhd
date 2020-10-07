@@ -124,7 +124,7 @@ begin
     end if;
     tb_uart_tx_data   <= X"FF";
     --
-    wait for 16*SYS_CLK_FREQ/UART_BAUD_RATE*SAMPLE_PERIOD;
+    wait for 16*MODEM_CLK_FREQ/UART_BAUD_RATE*SAMPLE_PERIOD;
     --
     -- END OF SIMULATION
     write(l,string'("                                 ")); writeline(output,l);
@@ -153,7 +153,7 @@ begin
   u_tb_uart : uart
   generic map
   (
-    clk_freq  => SYS_CLK_FREQ,   --frequency of system clock in Hertz
+    clk_freq  => MODEM_CLK_FREQ, --frequency of system clock in Hertz
     baud_rate => UART_BAUD_RATE, --data link baud rate in bits/second
     os_rate   => 16,             --oversampling rate to find center of receive bits (in samples per baud period)
     d_width   => 8,              --data bus width

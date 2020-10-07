@@ -21,6 +21,7 @@ architecture rtl of top_uart_loopback is
 
 
   signal arst_n_s     : std_logic;
+  signal srst_n_s     : std_logic;
   signal srst_s       : std_logic;
   signal tx_data_s    : std_logic_vector(7 downto 0);
   signal tx_busy_s    : std_logic;
@@ -42,6 +43,7 @@ begin
 
   -- Generate synchronous reset
   arst_n_s <= not(arst_i);
+  srst_n_s <= not(srst_s);
   u_srst : process(clk_i)
   begin
     if rising_edge(clk_i) then
@@ -53,7 +55,7 @@ begin
   u_uart : uart
   generic map
   (
-    clk_freq  => SYS_CLK_FREQ,   --frequency of system clock in Hertz
+    clk_freq  => MODEM_CLK_FREQ, --frequency of system clock in Hertz
     baud_rate => UART_BAUD_RATE, --data link baud rate in bits/second
     os_rate   => 16,             --oversampling rate to find center of receive bits (in samples per baud period)
     d_width   => 8,              --data bus width
@@ -63,7 +65,7 @@ begin
   port map
   (
     clk       => clk_i,      --system clock
-    reset_n   => arst_n_s,   --ascynchronous reset
+    reset_n   => srst_n_s,   --ascynchronous reset
     tx_ena    => tx_en_s,    --initiate transmission
     tx_data   => tx_data_s,  --data to transmit
     rx        => rx_i,       --receive pin
