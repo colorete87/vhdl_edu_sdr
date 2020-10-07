@@ -56,8 +56,6 @@ ARCHITECTURE logic OF uart IS
 	SIGNAL	tx_parity			:	STD_LOGIC_VECTOR(d_width DOWNTO 0);  	--calculation of transmit parity
 	SIGNAL	rx_buffer			:	STD_LOGIC_VECTOR(parity+d_width DOWNTO 0) := (OTHERS => '0');  	--values received
 	SIGNAL	tx_buffer			:	STD_LOGIC_VECTOR(parity+d_width+1 DOWNTO 0) := (OTHERS => '1');	--values to be transmitted
-		SIGNAL count_baud_s	:	INTEGER RANGE 0 TO clk_freq/baud_rate-1 := 0;			--counter to determine baud rate period
-		SIGNAL count_os_s		:	INTEGER RANGE 0 TO clk_freq/baud_rate/os_rate-1 := 0;	--counter to determine oversampling period
 BEGIN
 
 	--generate clock enable pulses at the baud rate and the oversampling rate
@@ -89,8 +87,6 @@ BEGIN
 				os_pulse <= '1';												--assert oversampling pulse
 			END IF;
 		END IF;
-    count_baud_s <= count_baud;
-    count_os_s <= count_os;
 	END PROCESS;
 
 	--receive state machine
