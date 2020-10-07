@@ -80,7 +80,8 @@ begin
 
   -- Internal Enable
   u_internal_enable :
-  internal_enable_s <= en_i and is_dv_i and map_is_rfd_i;
+  internal_enable_s <= en_i and map_is_rfd_i             when counter_s(7 downto 0) /= nm1_sfd_i else
+                       en_i and is_dv_i and map_is_rfd_i;
 
   -- Input register enable
   u_input_reg_en :

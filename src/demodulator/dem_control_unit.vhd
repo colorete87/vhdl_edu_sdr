@@ -96,7 +96,7 @@ begin
   end process;
 
   -- Next State Combinational Logic
-  process (state_s,signal_det_i,bit_counter_s,bit_i,nm1_sfd_i)
+  process (state_s,signal_det_i,bit_counter_s,bit_i,nm1_sfd_i,nm1_pre_i,nm1_bytes_i)
   begin
     case state_s is
       when S_INIT   =>

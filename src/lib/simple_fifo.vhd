@@ -59,94 +59,96 @@ begin
 
   dpr_we <= '1' when we = '1' and full_loc = '0' else '0';
 
-  wr_rd : process(Clock, Reset) is
+  wr_rd : process(Clock) is
     variable head_v, tail_v : natural range 0 to MEM_SIZE-1;
     variable wraparound_v   : boolean;
   begin
 
-    if Reset = RESET_ACTIVE_LEVEL then
-      head         <= 0;
-      tail         <= 0;
-      full_loc     <= '0';
-      empty_loc    <= '1';
-      -- Almost_full  <= '0';
-      -- Almost_empty <= '0';
-
-      wraparound <= false;
-
-    elsif rising_edge(Clock) then
-      head_v       := head;
-      tail_v       := tail;
-      wraparound_v := wraparound;
-
-      if We = '1' and (wraparound = false or head /= tail) then
-        
-        if head_v = MEM_SIZE-1 then
-          head_v       := 0;
-          wraparound_v := true;
+    if rising_edge(Clock) then
+        if Reset = RESET_ACTIVE_LEVEL then
+          head         <= 0;
+          tail         <= 0;
+          full_loc     <= '0';
+          empty_loc    <= '1';
+          -- Almost_full  <= '0';
+          -- Almost_empty <= '0';
+    
+          wraparound <= false;
+    
         else
-          head_v := head_v + 1;
-        end if;
+          head_v       := head;
+          tail_v       := tail;
+          wraparound_v := wraparound;
+    
+          if We = '1' and (wraparound = false or head /= tail) then
+            
+            if head_v = MEM_SIZE-1 then
+              head_v       := 0;
+              wraparound_v := true;
+            else
+              head_v := head_v + 1;
+            end if;
+          end if;
+    
+          if Re = '1' and (wraparound = true or head /= tail) then
+            if tail_v = MEM_SIZE-1 then
+              tail_v       := 0;
+              wraparound_v := false;
+            else
+              tail_v := tail_v + 1;
+            end if;
+          end if;
+    
+    
+          if head_v /= tail_v then
+            empty_loc <= '0';
+            full_loc  <= '0';
+          else
+            if wraparound_v then
+              full_loc <= '1';
+              empty_loc <= '0';
+            else
+              full_loc <= '0';
+              empty_loc <= '1';
+            end if;
+          end if;
+    
+          if head_v >= tail_v then
+            data_count_o <= std_logic_vector(to_unsigned(head_v-tail_v,integer(ceil(log2(real(MEM_SIZE))))));
+          else
+            data_count_o <= std_logic_vector(to_unsigned(head_v+MEM_SIZE-tail_v,integer(ceil(log2(real(MEM_SIZE))))));
+          end if;
+          -- if not(wraparound_v) then
+          --   data_count_o <= std_logic_vector(to_unsigned(head_v - tail_v,integer(ceil(log2(real(MEM_SIZE))))));
+          -- else
+          --   data_count_o <= std_logic_vector(to_unsigned(head_v + MEM_SIZE-tail_v,integer(ceil(log2(real(MEM_SIZE))))));
+          -- end if;
+    
+          -- Almost_full  <= '0';
+          -- Almost_empty <= '0';
+          -- if head_v /= tail_v then
+          --   if head_v > tail_v then
+          --     if Almost_full_thresh >= MEM_SIZE - (head_v - tail_v) then
+          --       Almost_full <= '1';
+          --     end if;
+          --     if Almost_empty_thresh >= head_v - tail_v then
+          --       Almost_empty <= '1';
+          --     end if;
+          --   else
+          --     if Almost_full_thresh >= tail_v - head_v then
+          --       Almost_full <= '1';
+          --     end if;
+          --     if Almost_empty_thresh >= MEM_SIZE - (tail_v - head_v) then
+          --       Almost_empty <= '1';
+          --     end if;
+          --   end if;
+          -- end if;
+    
+    
+          head       <= head_v;
+          tail       <= tail_v;
+          wraparound <= wraparound_v;
       end if;
-
-      if Re = '1' and (wraparound = true or head /= tail) then
-        if tail_v = MEM_SIZE-1 then
-          tail_v       := 0;
-          wraparound_v := false;
-        else
-          tail_v := tail_v + 1;
-        end if;
-      end if;
-
-
-      if head_v /= tail_v then
-        empty_loc <= '0';
-        full_loc  <= '0';
-      else
-        if wraparound_v then
-          full_loc <= '1';
-          empty_loc <= '0';
-        else
-          full_loc <= '0';
-          empty_loc <= '1';
-        end if;
-      end if;
-
-      if head_v >= tail_v then
-        data_count_o <= std_logic_vector(to_unsigned(head_v-tail_v,integer(ceil(log2(real(MEM_SIZE))))));
-      else
-        data_count_o <= std_logic_vector(to_unsigned(head_v+MEM_SIZE-tail_v,integer(ceil(log2(real(MEM_SIZE))))));
-      end if;
-      -- if not(wraparound_v) then
-      --   data_count_o <= std_logic_vector(to_unsigned(head_v - tail_v,integer(ceil(log2(real(MEM_SIZE))))));
-      -- else
-      --   data_count_o <= std_logic_vector(to_unsigned(head_v + MEM_SIZE-tail_v,integer(ceil(log2(real(MEM_SIZE))))));
-      -- end if;
-
-      -- Almost_full  <= '0';
-      -- Almost_empty <= '0';
-      -- if head_v /= tail_v then
-      --   if head_v > tail_v then
-      --     if Almost_full_thresh >= MEM_SIZE - (head_v - tail_v) then
-      --       Almost_full <= '1';
-      --     end if;
-      --     if Almost_empty_thresh >= head_v - tail_v then
-      --       Almost_empty <= '1';
-      --     end if;
-      --   else
-      --     if Almost_full_thresh >= tail_v - head_v then
-      --       Almost_full <= '1';
-      --     end if;
-      --     if Almost_empty_thresh >= MEM_SIZE - (tail_v - head_v) then
-      --       Almost_empty <= '1';
-      --     end if;
-      --   end if;
-      -- end if;
-
-
-      head       <= head_v;
-      tail       <= tail_v;
-      wraparound <= wraparound_v;
     end if;
   end process;
 

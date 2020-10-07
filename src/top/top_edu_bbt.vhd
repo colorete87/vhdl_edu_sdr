@@ -60,6 +60,7 @@ architecture rtl of top_edu_bbt is
   -- Modem State
   signal modem_tx_rdy_s     : std_logic;
   signal modem_rx_ovf_s     : std_logic;
+  -- signal modem_tx_rdy_d10_s : std_logic_vector(9 downto 0);
 
   -- Modulator to channel output
   signal mod_os_data_s  : std_logic_vector( 9 downto 0);
@@ -80,7 +81,30 @@ architecture rtl of top_edu_bbt is
   -- Channel config
   constant sigma_c      : std_logic_vector(15 downto 0) := X"0040"; -- QU16.12
 
+    COMPONENT ila_0
+    PORT (
+        clk : IN STD_LOGIC;
+        probe0 : IN STD_LOGIC_VECTOR(9 DOWNTO 0);
+        probe1 : IN STD_LOGIC_VECTOR(9 DOWNTO 0); 
+        probe2 : IN STD_LOGIC_VECTOR(7 DOWNTO 0);
+        probe3 : IN STD_LOGIC_VECTOR(0 DOWNTO 0)
+    );
+    END COMPONENT  ;
+
+  signal tx_s : std_logic_vector(0 downto 0);
+
 begin
+
+    u_ila0 : ila_0
+    PORT MAP (
+        clk => clk_i,
+        probe0 => mod_os_data_s,
+        probe1 => chan_os_data_s,
+        probe2 => tx_data_s,
+        probe3 => tx_s
+    );
+    tx_o <= tx_s(0);
+
 
   -- Generate synchronous reset
   arst_n_s <= not(arst_i);
@@ -113,7 +137,7 @@ begin
     rx_error  => open,       --start, parity, or stop bit error detected
     rx_data   => rx_data_s,  --data received
     tx_busy   => tx_busy_s,  --transmission in progress
-    tx        => tx_o        --transmit pin
+    tx        => tx_s(0)     --transmit pin
   );
 
   -- UART RX Interface
@@ -196,6 +220,10 @@ begin
           else
             fifo_os_dv_s <= '0'; 
           end if;
+        else
+          if fifo_os_dv_s = '1' and fifo_os_rfd_s = '1' then
+            fifo_os_dv_s <= '0'; 
+          end if;
         end if;
         -- if fifo_os_rfd_s = '1' then
         --   if fifo_empty_s = '1' then
@@ -218,10 +246,13 @@ begin
     if rising_edge(clk_i) then
       if srst_s = '1' then
         modem_send_s <= '0';
+        -- modem_tx_rdy_d10_s <= (others => '0');
       else
+        -- modem_tx_rdy_d10_s <= modem_tx_rdy_d10_s(8 downto 0) & modem_tx_rdy_s;
         if modem_send_s = '1' then
           modem_send_s <= '0';
         else
+          -- if unsigned(fifo_data_count_s) >= unsigned(nm1_bytes_c) and modem_tx_rdy_d10_s(9) = '1' then
           if unsigned(fifo_data_count_s) >= unsigned(nm1_bytes_c) and modem_tx_rdy_s = '1' then
             modem_send_s <= '1';
           end if;
