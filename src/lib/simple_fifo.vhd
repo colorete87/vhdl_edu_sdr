@@ -1,38 +1,43 @@
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+use ieee.math_real.all;
+library work;
+use work.pkg_edu_bbt.all;
 
 entity simple_fifo is
   generic (
-    RESET_ACTIVE_LEVEL : std_ulogic := '1';
+    RESET_ACTIVE_LEVEL : std_logic := '1';
     MEM_SIZE           : positive;
     SYNC_READ          : boolean    := true
     );
   port (
-    Clock   : in std_ulogic;
-    Reset   : in std_ulogic;
-    We      : in std_ulogic;  --# Write enable
-    Wr_data : in std_ulogic_vector;
+    Clock   : in std_logic;
+    Reset   : in std_logic;
+    We      : in std_logic;  --# Write enable
+    Wr_data : in std_logic_vector;
 
-    Re      : in  std_ulogic;
-    Rd_data : out std_ulogic_vector;
+    Re      : in  std_logic;
+    Rd_data : out std_logic_vector;
 
-    Empty : out std_ulogic;
-    Full  : out std_ulogic;
+    Empty : out std_logic;
+    Full  : out std_logic;
+    data_count_o : out std_logic_vector(integer(ceil(log2(real(MEM_SIZE))))-1 downto 0)
 
-    Almost_empty_thresh : in  natural range 0 to MEM_SIZE-1 := 1;
-    Almost_full_thresh  : in  natural range 0 to MEM_SIZE-1 := 1;
-    Almost_empty        : out std_ulogic;
-    Almost_full         : out std_ulogic
+    -- Almost_empty_thresh : in  natural range 0 to MEM_SIZE-1 := 1;
+    -- Almost_full_thresh  : in  natural range 0 to MEM_SIZE-1 := 1;
+    -- Almost_empty        : out std_logic;
+    -- Almost_full         : out std_logic
     );
 end entity;
 
 architecture rtl of simple_fifo is
 
   signal head, tail : natural range 0 to MEM_SIZE-1;
-  signal dpr_we     : std_ulogic;
+  signal dpr_we     : std_logic;
   signal wraparound : boolean;
 
-  signal empty_loc, full_loc : std_ulogic;
+  signal empty_loc, full_loc : std_logic;
 begin
 
   dpr : dual_port_ram
@@ -64,8 +69,8 @@ begin
       tail         <= 0;
       full_loc     <= '0';
       empty_loc    <= '1';
-      Almost_full  <= '0';
-      Almost_empty <= '0';
+      -- Almost_full  <= '0';
+      -- Almost_empty <= '0';
 
       wraparound <= false;
 
@@ -107,25 +112,36 @@ begin
         end if;
       end if;
 
-      Almost_full  <= '0';
-      Almost_empty <= '0';
-      if head_v /= tail_v then
-        if head_v > tail_v then
-          if Almost_full_thresh >= MEM_SIZE - (head_v - tail_v) then
-            Almost_full <= '1';
-          end if;
-          if Almost_empty_thresh >= head_v - tail_v then
-            Almost_empty <= '1';
-          end if;
-        else
-          if Almost_full_thresh >= tail_v - head_v then
-            Almost_full <= '1';
-          end if;
-          if Almost_empty_thresh >= MEM_SIZE - (tail_v - head_v) then
-            Almost_empty <= '1';
-          end if;
-        end if;
+      if head_v >= tail_v then
+        data_count_o <= std_logic_vector(to_unsigned(head_v-tail_v,integer(ceil(log2(real(MEM_SIZE))))));
+      else
+        data_count_o <= std_logic_vector(to_unsigned(head_v+MEM_SIZE-tail_v,integer(ceil(log2(real(MEM_SIZE))))));
       end if;
+      -- if not(wraparound_v) then
+      --   data_count_o <= std_logic_vector(to_unsigned(head_v - tail_v,integer(ceil(log2(real(MEM_SIZE))))));
+      -- else
+      --   data_count_o <= std_logic_vector(to_unsigned(head_v + MEM_SIZE-tail_v,integer(ceil(log2(real(MEM_SIZE))))));
+      -- end if;
+
+      -- Almost_full  <= '0';
+      -- Almost_empty <= '0';
+      -- if head_v /= tail_v then
+      --   if head_v > tail_v then
+      --     if Almost_full_thresh >= MEM_SIZE - (head_v - tail_v) then
+      --       Almost_full <= '1';
+      --     end if;
+      --     if Almost_empty_thresh >= head_v - tail_v then
+      --       Almost_empty <= '1';
+      --     end if;
+      --   else
+      --     if Almost_full_thresh >= tail_v - head_v then
+      --       Almost_full <= '1';
+      --     end if;
+      --     if Almost_empty_thresh >= MEM_SIZE - (tail_v - head_v) then
+      --       Almost_empty <= '1';
+      --     end if;
+      --   end if;
+      -- end if;
 
 
       head       <= head_v;
