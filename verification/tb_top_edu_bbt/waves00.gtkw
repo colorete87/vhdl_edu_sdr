@@ -1,0 +1,66 @@
+[*]
+[*] GTKWave Analyzer v3.3.102 (w)1999-2019 BSI
+[*] Tue Oct  6 09:33:52 2020
+[*]
+[dumpfile] "/home/fzacchigna/fpga/proyects/vhdl_edu_bbt/verification/tb_top_uart_fifo_loopback/waves.fst"
+[dumpfile_mtime] "Tue Oct  6 09:33:44 2020"
+[dumpfile_size] 330
+[savefile] "/home/fzacchigna/fpga/proyects/vhdl_edu_bbt/verification/tb_top_uart_fifo_loopback/waves00.gtkw"
+[timestart] 0
+[size] 1920 1016
+[pos] -1 -1
+*-35.000000 85125000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] u_dut.
+[sst_width] 514
+[signals_width] 206
+[sst_expanded] 1
+[sst_vpaned_height] 286
+@28
+u_dut.clk_i
+@200
+-
+@22
+u_dut.uart_os_data_s[7:0]
+@28
+u_dut.uart_os_dv_s
+u_dut.uart_os_rfd_s
+@200
+-
+@22
+u_dut.fifo_data_count_s[7:0]
+@28
+u_dut.fifo_re_s
+@22
+u_dut.fifo_data_s[7:0]
+@28
+[color] 3
+u_dut.fifo_empty_s
+[color] 3
+u_dut.fifo_full_s
+u_dut.fifo_re_s
+@200
+-
+@22
+u_dut.fifo_os_data_s[7:0]
+@28
+u_dut.fifo_os_dv_s
+u_dut.fifo_os_rfd_s
+@200
+-
+@28
+u_dut.modem_send_s
+@200
+-
+@420
+u_dut.mod_os_data_s[9:0]
+@8420
+u_dut.mod_os_data_s[9:0]
+@20000
+-
+@20001
+-
+@28
+u_dut.mod_os_dv_s
+u_dut.mod_os_rfd_s
+[pattern_trace] 1
+[pattern_trace] 0
