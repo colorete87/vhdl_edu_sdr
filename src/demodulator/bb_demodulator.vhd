@@ -227,7 +227,7 @@ begin
       else
         if en_i = '1' then
           aux_v := unsigned(signed(mf_data_s) * signed(mf_data_s));
-          mf_sq_s <= std_logic_vector(aux_v(9 downto 0)); -- TODO a ojo
+          mf_sq_s <= std_logic_vector(aux_v(15 downto 6)); -- TODO a ojo
         end if;
       end if;
     end if;
