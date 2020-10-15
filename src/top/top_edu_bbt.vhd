@@ -19,48 +19,49 @@ end entity top_edu_bbt;
 -- architecture
 architecture rtl of top_edu_bbt is
 
-
+  -- ---------------------------------------------------------------------------
+  -- SIGNALS
+  -- ---------------------------------------------------------------------------
   -- UART signals
   signal arst_n_s     : std_logic;
   signal srst_s       : std_logic := '1';
-  signal tx_data_s    : std_logic_vector(7 downto 0);
-  signal tx_busy_s    : std_logic;
-  signal tx_en_s      : std_logic;
-  signal rx_data_s    : std_logic_vector(7 downto 0);
-  signal rx_busy_s    : std_logic;
-  signal rx_busy_d1_s : std_logic;
 
   -- UART IF signals
   signal uart_os_data_s     : std_logic_vector(7 downto 0);
   signal uart_os_dv_s       : std_logic;
   signal uart_os_rfd_s      : std_logic;
-  signal uart_is_data_s     : std_logic_vector(7 downto 0);
-  signal uart_is_dv_s       : std_logic;
-  signal uart_is_rfd_s      : std_logic;
-  signal uart_rx_ovf_o      : std_logic;
-  signal uart_new_rx_data_s : std_logic;
+  signal uart_rx_err_s      : std_logic;
+  signal uart_rx_ovf_s      : std_logic;
 
-  -- FIFO signals
-  signal fifo_data_s        : std_logic_vector(7 downto 0);
-  signal fifo_re_s          : std_logic;
-  signal fifo_re2_s         : std_logic;
-  signal fifo_empty_s       : std_logic;
-  signal fifo_full_s        : std_logic;
-  signal fifo_data_count_s  : std_logic_vector(7 downto 0);
-  signal fifo_os_data_s     : std_logic_vector(7 downto 0);
-  signal fifo_os_dv_s       : std_logic;
-  signal fifo_os_rfd_s      : std_logic;
+  -- Modem Control
+  signal modem_send_s        : std_logic;
+  signal pipe_data_counter_s : std_logic_vector(7 downto 0);
+
+  -- RX FIFO signals
+  signal rx_fifo_os_data_s     : std_logic_vector(7 downto 0);
+  signal rx_fifo_os_dv_s       : std_logic;
+  signal rx_fifo_os_rfd_s      : std_logic;
+  signal rx_fifo_empty_s       : std_logic;
+  signal rx_fifo_full_s        : std_logic;
+  signal rx_fifo_data_count_s  : std_logic_vector(7 downto 0);
+  -- TX FIFO signals
+  signal tx_fifo_os_data_s     : std_logic_vector(7 downto 0);
+  signal tx_fifo_os_dv_s       : std_logic;
+  signal tx_fifo_os_rfd_s      : std_logic;
+  signal tx_fifo_empty_s       : std_logic;
+  signal tx_fifo_full_s        : std_logic;
+  signal tx_fifo_data_count_s  : std_logic_vector(7 downto 0);
 
   -- Modem signals
+  signal modem_is_data_s    : std_logic_vector(7 downto 0); 
+  signal modem_is_dv_s      : std_logic;                    
+  signal modem_is_rfd_s     : std_logic;                    
   signal modem_os_data_s    : std_logic_vector(7 downto 0);
   signal modem_os_dv_s      : std_logic;
   signal modem_os_rfd_s     : std_logic;
-  -- Modem Control
-  signal modem_send_s       : std_logic;
   -- Modem State
   signal modem_tx_rdy_s     : std_logic;
   signal modem_rx_ovf_s     : std_logic;
-  -- signal modem_tx_rdy_d10_s : std_logic_vector(9 downto 0);
 
   -- Modulator to channel output
   signal mod_os_data_s  : std_logic_vector( 9 downto 0);
@@ -80,33 +81,47 @@ architecture rtl of top_edu_bbt is
   constant pll_ki_c     : std_logic_vector(15 downto 0) := X"9000";
   -- Channel config
   constant sigma_c      : std_logic_vector(15 downto 0) := X"0040"; -- QU16.12
+  -- ---------------------------------------------------------------------------
 
-    COMPONENT ila_0
-    PORT (
-        clk : IN STD_LOGIC;
-        probe0 : IN STD_LOGIC_VECTOR(9 DOWNTO 0);
-        probe1 : IN STD_LOGIC_VECTOR(9 DOWNTO 0); 
-        probe2 : IN STD_LOGIC_VECTOR(7 DOWNTO 0);
-        probe3 : IN STD_LOGIC_VECTOR(0 DOWNTO 0)
-    );
-    END COMPONENT  ;
 
-  signal tx_s : std_logic_vector(0 downto 0);
+  -- ---------------------------------------------------------------------------
+  -- DEBUG SIGNALS
+  -- ---------------------------------------------------------------------------
+  -- ILA
+  signal tx_s : std_logic;
+  -- ILA component
+  COMPONENT ila_0
+  PORT (
+      clk : IN STD_LOGIC;
+      probe0 : IN STD_LOGIC_VECTOR(9 DOWNTO 0);
+      probe1 : IN STD_LOGIC_VECTOR(9 DOWNTO 0); 
+      probe2 : IN STD_LOGIC_VECTOR(7 DOWNTO 0);
+      probe3 : IN STD_LOGIC_VECTOR(0 DOWNTO 0)
+  );
+  END COMPONENT  ;
+  -- ---------------------------------------------------------------------------
 
 begin
 
-    u_ila0 : ila_0
-    PORT MAP (
-        clk => clk_i,
-        probe0 => mod_os_data_s,
-        probe1 => chan_os_data_s,
-        probe2 => tx_data_s,
-        probe3 => tx_s
-    );
-    tx_o <= tx_s(0);
+
+  -- ---------------------------------------------------------------------------
+  -- ILA
+  -- ---------------------------------------------------------------------------
+  u_ila0 : ila_0
+  PORT MAP (
+      clk => clk_i,
+      probe0 => mod_os_data_s,
+      probe1 => chan_os_data_s,
+      probe2 => rx_fifo_os_data_s,
+      probe3(0) => tx_s
+  );
+  tx_o <= tx_s;
+  -- ---------------------------------------------------------------------------
 
 
+  -- ---------------------------------------------------------------------------
   -- Generate synchronous reset
+  -- ---------------------------------------------------------------------------
   arst_n_s <= not(arst_i);
   u_srst : process(clk_i)
   begin
@@ -114,154 +129,118 @@ begin
       srst_s <= arst_i;
     end if;
   end process;
+  -- ---------------------------------------------------------------------------
 
+
+  -- ---------------------------------------------------------------------------
   -- UART
-  u_uart : uart
-  generic map
-  (
-    clk_freq  => MODEM_CLK_FREQ, --frequency of system clock in Hertz
-    baud_rate => UART_BAUD_RATE, --data link baud rate in bits/second
-    os_rate   => 16,             --oversampling rate to find center of receive bits (in samples per baud period)
-    d_width   => 8,              --data bus width
-    parity    => 0,              --0 for no parity, 1 for parity
-    parity_eo => '0'             --'0' for even, '1' for odd parity
-  )
-  port map
-  (
-    clk       => clk_i,      --system clock
-    reset_n   => arst_n_s,   --ascynchronous reset
-    tx_ena    => tx_en_s,    --initiate transmission
-    tx_data   => tx_data_s,  --data to transmit
-    rx        => rx_i,       --receive pin
-    rx_busy   => rx_busy_s,  --data reception in progress
-    rx_error  => open,       --start, parity, or stop bit error detected
-    rx_data   => rx_data_s,  --data received
-    tx_busy   => tx_busy_s,  --transmission in progress
-    tx        => tx_s(0)     --transmit pin
-  );
+  -- ---------------------------------------------------------------------------
+  -- UART Module
+  u_uart : sif_uart
+    generic map (
+      CLK_FREQ  => MODEM_CLK_FREQ, --frequency of system clock in Hertz                                            
+      BAUD_RATE => UART_BAUD_RATE, --data link baud rate in bits/second                                            
+      OS_RATE   => 16,             --oversampling rate to find center of receive bits (in samples per baud period) 
+      D_WIDTH   => 8,              --data bus width                                                                
+      PARITY    => 0,              --0 for no parity, 1 for parity                                                 
+      PARITY_EO => '0'             --'0' for even, '1' for odd parity                                              
+    )
+    port map (
+      -- clk, srst
+      clk_i        => clk_i,
+      srst_i       => srst_s,
+      -- Serial Interface
+      rx_i         => rx_i,
+      tx_o         => tx_s,
+      -- Input Stream Interface
+      tx_is_data_i => rx_fifo_os_data_s,
+      tx_is_dv_i   => rx_fifo_os_dv_s,
+      tx_is_rfd_o  => rx_fifo_os_rfd_s,
+      -- Output Stream Interface
+      rx_os_data_o => uart_os_data_s,
+      rx_os_dv_o   => uart_os_dv_s,
+      rx_os_rfd_i  => uart_os_rfd_s,
+      -- Status
+      rx_err_o     => uart_rx_err_s,
+      rx_ovf_o     => uart_rx_ovf_s
+    );
+  -- -- ---------------------------------------------------------------------------
 
-  -- UART RX Interface
-  u_uart_rx_bysy_flank : process(clk_i)
-  begin
-    if rising_edge(clk_i) then
-      if srst_s = '1' then
-        rx_busy_d1_s <= '0';
-      else
-        rx_busy_d1_s <= rx_busy_s;
-      end if;
-    end if;
-  end process;
-  uart_new_rx_data_s <= not(rx_busy_s) and rx_busy_d1_s;
-  u_uart_rx_if : process(clk_i)
-  begin
-    if rising_edge(clk_i) then
-      if srst_s = '1' then
-        uart_os_data_s <= (others => '0');
-        uart_os_dv_s    <= '0';
-        uart_rx_ovf_o   <= '0';
-      else
-        if uart_new_rx_data_s = '1' then
-          uart_os_data_s  <= rx_data_s;
-          uart_os_dv_s    <= '1';
-        end if;
-        if uart_os_rfd_s = '1' and uart_os_dv_s = '1' then
-          uart_os_dv_s    <= '0';
-        end if;
-        if uart_os_rfd_s = '0' and uart_os_dv_s = '1' and uart_new_rx_data_s = '1' then
-          uart_rx_ovf_o <= '1';
-        end if;
-      end if;
-    end if;
-  end process;
-  -- UART TX Interface
-  tx_data_s     <= modem_os_data_s;
-  tx_en_s       <= modem_os_dv_s and not(tx_busy_s);
-  uart_is_rfd_s <= not(tx_busy_s);
 
-  -- FIFO
-  u_rx_fifo : simple_fifo
+  -- ---------------------------------------------------------------------------
+  -- TX FIFO
+  -- ---------------------------------------------------------------------------
+  u_tx_fifo : sif_fifo
   generic map (
     MEM_SIZE     => 256
   )
   port map (
-    Clock        => clk_i,
-    Reset        => srst_s,
-    We           => uart_os_dv_s,
-    Wr_data      => uart_os_data_s,
-    Re           => fifo_re_s,
-    Rd_data      => fifo_data_s,
-    Empty        => fifo_empty_s,
-    Full         => fifo_full_s,
-    data_count_o => fifo_data_count_s
+    -- clk, srst
+    clk_i        => clk_i,
+    srst_i       => srst_s,
+    -- Input Stream Interface
+    is_data_i    => uart_os_data_s,
+    is_dv_i      => uart_os_dv_s, 
+    is_rfd_o     => uart_os_rfd_s,
+    -- Output Stream Interface
+    os_data_o    => tx_fifo_os_data_s, 
+    os_dv_o      => tx_fifo_os_dv_s,   
+    os_rfd_i     => tx_fifo_os_rfd_s,  
+    -- Status
+    empty_o      => tx_fifo_empty_s,
+    full_o       => tx_fifo_full_s,
+    data_count_o => tx_fifo_data_count_s
   );
-  fifo_os_data_s <= fifo_data_s;
-  -- fifo_os_dv_s   <= '1' when fifo_data_count_s > X"00" else '0';
-  -- fifo_os_dv_s   <= '1' when fifo_data_count_s > X"00" else '0';
-  -- fifo_re_s      <= fifo_os_rfd_s and fifo_os_dv_s;
-  -- fifo_re_s <= uart_is_rfd_s when fifo_data_count_s > X"03" and uart_is_rfd_s = '1' else '0';
-  uart_os_rfd_s <= not(fifo_full_s);
-  u_fifo_os : process(clk_i)
-  begin
-    if rising_edge(clk_i) then
-      if srst_s = '1' then
-        fifo_os_dv_s   <= '0';
-        -- fifo_re2_s      <= '0';
-      else
-        -- if fifo_empty_s = '0' and fifo_os_dv_s = '0' then
-        --   fifo_re2_s      <= '1';
-        -- elsif fifo_empty_s = '0' and fifo_os_dv_s = '1' and fifo_os_rfd_s = '1' then
-        --   fifo_re2_s      <= '1';
-        -- else
-        --   fifo_re2_s      <= '0';
-        -- end if;
-        if fifo_re_s = '1' then
-          if fifo_empty_s = '0' then
-            fifo_os_dv_s <= '1'; 
-          else
-            fifo_os_dv_s <= '0'; 
-          end if;
-        else
-          if fifo_os_dv_s = '1' and fifo_os_rfd_s = '1' then
-            fifo_os_dv_s <= '0'; 
-          end if;
-        end if;
-        -- if fifo_os_rfd_s = '1' then
-        --   if fifo_empty_s = '1' then
-        --     fifo_os_dv_s   <= '0';
-        --   else
-        --     fifo_os_dv_s   <= '1';
-        --   end if;
-        -- end if;
-      end if;
-    end if;
-  end process;
-  -- fifo_re_s <= fifo_re2_s and not(fifo_empty_s);
-  fifo_re_s <= (not(fifo_empty_s) and not(fifo_os_dv_s))
-               or
-               (not(fifo_empty_s) and fifo_os_dv_s and fifo_os_rfd_s);
+  -- ---------------------------------------------------------------------------
 
-  -- send_s signal logic
+
+  -- ---------------------------------------------------------------------------
+  -- SEND CONTROL: send_s signal logic
+  -- ---------------------------------------------------------------------------
   u_send_logic : process(clk_i)
   begin
     if rising_edge(clk_i) then
       if srst_s = '1' then
+        pipe_data_counter_s <= (others => '0');
         modem_send_s <= '0';
         -- modem_tx_rdy_d10_s <= (others => '0');
       else
-        -- modem_tx_rdy_d10_s <= modem_tx_rdy_d10_s(8 downto 0) & modem_tx_rdy_s;
+        if  uart_os_dv_s   = '1' and 
+            uart_os_rfd_s  = '1' and 
+            modem_is_dv_s  = '1' and 
+            modem_is_rfd_s = '1'
+        then
+          pipe_data_counter_s <= pipe_data_counter_s;
+        elsif  modem_is_dv_s  = '1' and 
+               modem_is_rfd_s = '1'
+        then
+          pipe_data_counter_s <= std_logic_vector(unsigned(pipe_data_counter_s)-1);
+        elsif  uart_os_dv_s   = '1' and 
+               uart_os_rfd_s  = '1'
+        then
+          pipe_data_counter_s <= std_logic_vector(unsigned(pipe_data_counter_s)+1);
+        end if;
         if modem_send_s = '1' then
           modem_send_s <= '0';
         else
-          -- if unsigned(fifo_data_count_s) >= unsigned(nm1_bytes_c) and modem_tx_rdy_d10_s(9) = '1' then
-          if unsigned(fifo_data_count_s) >= unsigned(nm1_bytes_c) and modem_tx_rdy_s = '1' then
+          if unsigned(pipe_data_counter_s) > unsigned(nm1_bytes_c) and modem_tx_rdy_s = '1' then
             modem_send_s <= '1';
           end if;
         end if;
       end if;
     end if;
   end process;
+  -- ---------------------------------------------------------------------------
 
+  -- ---------------------------------------------------------------------------
   -- Modem
+  -- ---------------------------------------------------------------------------
+  -- I want to keep the modem_is_... signals, in case new blocks are added
+  -- between the tx_fifo and the modem.
+  modem_is_data_s    <= tx_fifo_os_data_s;
+  modem_is_dv_s      <= tx_fifo_os_dv_s;
+  tx_fifo_os_rfd_s   <= modem_is_rfd_s;
+  -- Modem module
   u_modem : bb_modem
   port map
   (
@@ -270,9 +249,9 @@ begin
     en_i          => '1',
     srst_i        => srst_s,
     -- Input Stream
-    is_data_i     => fifo_os_data_s,
-    is_dv_i       => fifo_os_dv_s,
-    is_rfd_o      => fifo_os_rfd_s,
+    is_data_i     => modem_is_data_s,
+    is_dv_i       => modem_is_dv_s,
+    is_rfd_o      => modem_is_rfd_s,
     -- Output Stream
     os_data_o     => modem_os_data_s,
     os_dv_o       => modem_os_dv_s,
@@ -298,13 +277,39 @@ begin
     tx_rdy_o      => modem_tx_rdy_s,
     rx_ovf_o      => modem_rx_ovf_s
   );
+  -- ---------------------------------------------------------------------------
 
-  -- UART is
-  uart_is_data_s  <= modem_os_data_s;
-  uart_is_dv_s    <= modem_os_dv_s;
-  modem_os_rfd_s  <= uart_is_rfd_s;
 
+  -- ---------------------------------------------------------------------------
+  -- RX FIFO
+  -- ---------------------------------------------------------------------------
+  u_rx_fifo : sif_fifo
+  generic map (
+    MEM_SIZE     => 256
+  )
+  port map (
+    -- clk, srst
+    clk_i        => clk_i,
+    srst_i       => srst_s,
+    -- Input Stream Interface
+    is_data_i    => modem_os_data_s,
+    is_dv_i      => modem_os_dv_s, 
+    is_rfd_o     => modem_os_rfd_s,
+    -- Output Stream Interface
+    os_data_o    => rx_fifo_os_data_s, 
+    os_dv_o      => rx_fifo_os_dv_s,   
+    os_rfd_i     => rx_fifo_os_rfd_s,  
+    -- Status
+    empty_o      => rx_fifo_empty_s,
+    full_o       => rx_fifo_full_s,
+    data_count_o => rx_fifo_data_count_s
+  );
+  -- ---------------------------------------------------------------------------
+
+
+  -- ---------------------------------------------------------------------------
   -- Channel
+  -- ---------------------------------------------------------------------------
   u_channel : bb_channel
   port map
   (
@@ -323,5 +328,6 @@ begin
     -- Control
     sigma_i       => sigma_c
   );
+  -- ---------------------------------------------------------------------------
 
 end architecture;
