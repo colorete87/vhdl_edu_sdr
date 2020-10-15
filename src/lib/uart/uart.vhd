@@ -107,6 +107,7 @@ BEGIN
           WHEN idle =>																		--idle state
             rx_busy <= '0';																	--clear receive busy flag
             IF(rx = '0') THEN 																--start bit might be present
+              -- IF(os_count < os_rate/2) THEN --TODO:ORIGINAL													--oversampling pulse counter is not at start bit center
               IF(os_count <= os_rate/2) THEN													--oversampling pulse counter is not at start bit center
                 os_count := os_count + 1;														--increment oversampling pulse counter
                 rx_state <= idle;																	--remain in idle state

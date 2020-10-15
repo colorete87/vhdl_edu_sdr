@@ -23,11 +23,6 @@ entity simple_fifo is
     Empty : out std_logic;
     Full  : out std_logic;
     data_count_o : out std_logic_vector(integer(ceil(log2(real(MEM_SIZE))))-1 downto 0)
-
-    -- Almost_empty_thresh : in  natural range 0 to MEM_SIZE-1 := 1;
-    -- Almost_full_thresh  : in  natural range 0 to MEM_SIZE-1 := 1;
-    -- Almost_empty        : out std_logic;
-    -- Almost_full         : out std_logic
     );
 end entity;
 
