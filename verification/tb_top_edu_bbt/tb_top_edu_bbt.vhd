@@ -32,6 +32,8 @@ architecture rtl of tb_top_edu_bbt is
   signal tb_uart_rx_data  : std_logic_vector(7 downto 0);
   signal tb_uart_tx_busy  : std_logic;
 
+  constant SYS_CLK_FREQ   : natural := 125_000_000;
+
   constant SAMPLE_PERIOD   : time    := 62500 ps;
                              
 begin
@@ -74,7 +76,6 @@ begin
   -- Signals:
   -- TODO
   process
-    variable i_v    : integer := 0;
     variable l      : line;
   begin
     tb_dut_arst_i     <= '1';
@@ -89,30 +90,16 @@ begin
       if tb_uart_tx_busy = '1' then
         wait until tb_uart_tx_busy = '0';
       end if;
+      wait for 16*2*SAMPLE_PERIOD;
       tb_uart_tx_data   <= not(tb_uart_tx_data);
-      wait for 100*SAMPLE_PERIOD;
+      -- tb_uart_tx_data   <= std_logic_vector(unsigned(tb_uart_tx_data)+1);
+      wait for 1*SAMPLE_PERIOD;
       tb_uart_tx_en     <= '1';
       wait for 1*SAMPLE_PERIOD;
       tb_uart_tx_en     <= '0';
       wait for 1*SAMPLE_PERIOD;
-      i_v := i_v + 1;
-      report "[INFO] Byte:" & integer'image(i_v);
     end loop;
-    for i in 1 to 8 loop
-      -- send XFF
-      if tb_uart_tx_busy = '1' then
-        wait until tb_uart_tx_busy = '0';
-      end if;
-      tb_uart_tx_data   <= not(tb_uart_tx_data);
-      wait for 64*MODEM_CLK_FREQ/UART_BAUD_RATE*SAMPLE_PERIOD;
-      tb_uart_tx_en     <= '1';
-      wait for 1*SAMPLE_PERIOD;
-      tb_uart_tx_en     <= '0';
-      wait for 1*SAMPLE_PERIOD;
-      i_v := i_v + 1;
-      report "[INFO] Byte:" & integer'image(i_v);
-    end loop;
-    -- wait until tx_ready = '1'
+    wait for 16*200*SAMPLE_PERIOD;
     if tb_uart_tx_busy = '1' then
       wait until tb_uart_tx_busy = '0';
     end if;
@@ -146,6 +133,33 @@ begin
   -- UART
   tb_uart_rx   <= '1';
   tb_uart_arst <= not(tb_dut_arst_i);
+  -- uart log
+  u_uart_log : process(tb_dut_clk_i)
+    variable tx_byte_num_v    : integer := 0;
+    variable rx_byte_num_v    : integer := 0;
+    variable last_tx_en_v     : std_logic := '0';
+    variable last_rx_busy_v   : std_logic := '0';
+  begin
+    if rising_edge(tb_dut_clk_i) then
+      if tb_uart_tx_en = '1' and last_tx_en_v = '0' then
+        report "[INFO] TX Byte[" & integer'image(tx_byte_num_v) & "] = " & integer'image(to_integer(unsigned(tb_uart_tx_data)));
+        -- report std_logic_vector'image(tb_uart_tx_data);
+        tx_byte_num_v := tx_byte_num_v + 1;
+      end if;
+      if tb_uart_rx_busy = '0' and last_rx_busy_v = '1' then
+        report "[INFO] RX Byte[" & integer'image(tx_byte_num_v) & "] = " & integer'image(to_integer(unsigned(tb_uart_rx_data)));
+        -- report std_logic_vector'image(tb_uart_rx_data);
+        rx_byte_num_v := rx_byte_num_v + 1;
+      end if;
+      if tb_uart_rx_error = '1' then
+        report "[INFO] RX ERROR!!!";
+          -- severity failure;
+      end if;
+      last_tx_en_v   := tb_uart_tx_en;
+      last_rx_busy_v := tb_uart_rx_busy;
+    end if;
+  end process;
+  -- uart module
   u_tb_uart : uart
   generic map
   (
@@ -162,7 +176,7 @@ begin
     reset_n   => tb_uart_arst,     --ascynchronous reset
     tx_ena    => tb_uart_tx_en,    --initiate transmission
     tx_data   => tb_uart_tx_data,  --data to transmit
-    rx        => tb_uart_tx,       --receive pin
+    rx        => tb_uart_rx,       --receive pin
     rx_busy   => tb_uart_rx_busy,  --data reception in progress
     rx_error  => tb_uart_rx_error, --start, parity, or stop bit error detected
     rx_data   => tb_uart_rx_data,  --data received
