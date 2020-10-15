@@ -41,6 +41,7 @@ TBS_WAVES = $(addsuffix /$(WAVES_NAME),$(addprefix $(VER_DIR),$(TBS)))
 TBS_EXE   = $(addprefix $(VER_DIR),$(join $(addsuffix /,$(TBS)),$(TBS)))
 TBS_WLIBS = $(addsuffix /$(WLIB_NAME),$(addprefix $(VER_DIR),$(TBS)))
 
+
 .PHONY: all
 all:
 	@echo "Must provide one of the following TestBenches:"
