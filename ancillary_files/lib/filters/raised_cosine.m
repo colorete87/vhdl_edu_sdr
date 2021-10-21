@@ -5,13 +5,13 @@
 %   TODO
 %
 %-----------------------------------------------------------
-function y = raised_cosine (t, Ts, Beta)
+function y = raised_cosine (t, Tsymb, Beta)
 %-----------------------------------------------------------
 
   %---------------------------------------
-  y = 1/Ts*sinc(t/Ts).*cos(pi*Beta*t/Ts)./(1-(2*Beta*t/Ts).^2);
-  y(t==Ts/2/Beta) = pi/4/Ts*sinc(1/2/Beta);
-  y(t==-Ts/2/Beta) = pi/4/Ts*sinc(1/2/Beta);
+  y = 1/Tsymb*sinc(t/Tsymb).*cos(pi*Beta*t/Tsymb)./(1-(2*Beta*t/Tsymb).^2);
+  y(t==Tsymb/2/Beta) = pi/4/Tsymb*sinc(1/2/Beta);
+  y(t==-Tsymb/2/Beta) = pi/4/Tsymb*sinc(1/2/Beta);
   %---------------------------------------
 
 end
