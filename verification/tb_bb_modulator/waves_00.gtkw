@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.3.102 (w)1999-2019 BSI
-[*] Wed Sep 23 04:53:32 2020
+[*] Wed Oct 14 08:00:29 2020
 [*]
-[dumpfile] "/home/fzacchigna/fpga/proyects/vhdl_edu_bbt/verification/tb_bb_modulator/waves.fst"
-[dumpfile_mtime] "Wed Sep 23 04:53:19 2020"
-[dumpfile_size] 3138
-[savefile] "/home/fzacchigna/fpga/proyects/vhdl_edu_bbt/verification/tb_bb_modulator/waves_00.gtkw"
-[timestart] 0
+[dumpfile] "/home/fzacchigna/sdc/repo/vhdl_edu_bbt/verification/tb_bb_modulator/waves.fst"
+[dumpfile_mtime] "Wed Oct 14 07:59:46 2020"
+[dumpfile_size] 51163
+[savefile] "/home/fzacchigna/sdc/repo/vhdl_edu_bbt/verification/tb_bb_modulator/waves_00.gtkw"
+[timestart] 113730000000
 [size] 1920 1016
 [pos] -1 -1
-*-34.000000 13375000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-32.000000 118312500000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] dut.
 [sst_width] 404
 [signals_width] 291
@@ -45,7 +45,7 @@ tb_dut_os_rfd_i
 @200
 -
 -
-@800200
+@c00200
 -Control Unit
 @28
 dut.u_cu.clk_i
@@ -78,14 +78,15 @@ dut.u_cu.zero_out_o
 dut.u_cu.send_d1_s
 dut.u_cu.send_i
 dut.u_cu.start_tx_s
-@200
--counter_s[7:0]
--counter_s[7:0]
+@24
+dut.u_cu.counter_s[10:0]
+@8024
+dut.u_cu.counter_s[10:0]
 @20000
 -
 @28
 dut.u_cu.counter_srst_s
-@1000200
+@1401200
 -Control Unit
 @200
 -
@@ -97,7 +98,7 @@ dut.u_cu.state_s
 dut.u_cu.counter_srst_s
 [color] 7
 dut.u_cu.counter_s[10:0]
-@23
+@22
 [color] 7
 dut.u_cu.counter_s[10:0]
 @24
@@ -116,130 +117,26 @@ dut.is_data_i[7:0]
 dut.is_data_i[7:0]
 @20000
 -
-@24
-dut.bit_sel_s[2:0]
-@c08024
-dut.bit_sel_s[2:0]
 @28
-(0)dut.bit_sel_s[2:0]
-(1)dut.bit_sel_s[2:0]
-(2)dut.bit_sel_s[2:0]
-@1401200
--group_end
-@20000
--
-@24
-dut.data_sel_s[1:0]
+dut.u_cu.data_symb_sel_o[2:0]
 @8024
-dut.data_sel_s[1:0]
+dut.u_cu.data_symb_sel_o[2:0]
 @20000
 -
-@200
--
-@28
-[color] 3
-dut.zero_out_s
-@200
--
-@20000
--
-@c00200
--u_mapper
-@28
-dut.u_mapper.clk_i
-dut.u_mapper.en_i
-dut.u_mapper.srst_i
-@200
--Internal Control
-@28
-[color] 3
-dut.u_mapper.internal_enable_s
-@200
--Input Stream
-@28
-[color] 5
-dut.u_mapper.is_dv_i
-[color] 5
-dut.u_mapper.is_rfd_o
-[color] 5
-dut.u_mapper.is_symb_i
-[color] 5
-dut.u_mapper.is_zero_out_i
-@200
--Output Stream
-@28
-[color] 6
-dut.u_mapper.os_dv_o
-[color] 6
-dut.u_mapper.os_mdata_o[1:0]
+@800200
+-output stream
 @420
-[color] 6
-dut.u_mapper.os_mdata_o[1:0]
+dut.os_data_o[9:0]
 @8420
-[color] 6
-dut.u_mapper.os_mdata_o[1:0]
+dut.os_data_o[9:0]
 @20000
 -
-@28
-[color] 6
-dut.u_mapper.os_rfd_i
-@1401200
--u_mapper
-@200
 -
-@c00200
--u_zero_append
-@28
-dut.u_zero_append.clk_i
-dut.u_zero_append.en_i
-dut.u_zero_append.srst_i
-@200
--Internal Control
-@28
-dut.u_zero_append.input_reg_enable_s
-dut.u_zero_append.internal_enable_s
-dut.u_zero_append.counter_last_s
-@24
-dut.u_zero_append.counter_s[3:0]
-@8024
-dut.u_zero_append.counter_s[3:0]
-@20000
--
-@200
--Input Stream
-@420
-dut.u_zero_append.is_mdata_i[1:0]
-@8420
-dut.u_zero_append.is_mdata_i[1:0]
-@20000
 -
 @28
-dut.u_zero_append.is_dv_i
-dut.u_zero_append.is_rfd_o
-@200
--Output Stream
-@420
-dut.u_zero_append.os_deltas_o[1:0]
-@8420
-dut.u_zero_append.os_deltas_o[1:0]
-@20000
--
-@28
-dut.u_zero_append.os_dv_o
-dut.u_zero_append.os_rfd_i
-@1401200
--u_zero_append
-@200
--
--
--
--
--
--
--
--
--
--
--
+dut.os_dv_o
+dut.os_rfd_i
+@1000200
+-output stream
 [pattern_trace] 1
 [pattern_trace] 0

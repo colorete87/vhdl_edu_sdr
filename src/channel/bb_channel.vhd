@@ -89,7 +89,17 @@ begin
     reset  => srst_i,
     random => random_s
   );
-  mult_s <= std_logic_vector(signed(random_s) * signed(sigma_i));
+  -- mult_s <= std_logic_vector(signed(random_s) * signed(sigma_i));
+  u_mult_s : process (clk_i)
+  begin
+    if (rising_edge(clk_i)) then
+      if srst_i = '1' then
+        mult_s <= (others => '0');
+      else
+        mult_s <= std_logic_vector(signed(random_s) * signed(sigma_i));
+      end if;
+    end if;
+  end process;
   noise_s <= mult_s(27 downto 12);
 
   -- Adder and Multiplier

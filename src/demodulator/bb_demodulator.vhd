@@ -107,6 +107,23 @@ architecture rtl of bb_demodulator is
     );
   end component;
 
+  component moving_average is
+    generic (
+      NBIT         : integer := 8;
+      DEPTH        : integer := 16
+    );
+    port (
+      clk_i        : in  std_logic;
+      srst_i       : in  std_logic;
+      en_i         : in  std_logic;
+      -- input
+      data_i       : in  std_logic_vector(NBIT-1 downto 0);
+      -- output
+      data_o       : out std_logic_vector(NBIT-1 downto 0);
+      data_valid_o : out std_logic
+    );
+  end component;
+
   -- constants
   constant N_PULSE   : integer := 16;
 
@@ -117,6 +134,7 @@ architecture rtl of bb_demodulator is
   signal mf_rfd_s         : std_logic;
   signal mf_data_d_s      : std_logic_vector(9 downto 0);
   signal mf_sq_s          : std_logic_vector(9 downto 0);
+  signal mf_sq_ma_s       : std_logic_vector(9 downto 0);
 
   -- Shift register
   signal sr_en_s          : std_logic;
@@ -207,17 +225,19 @@ begin
         sample0_s      <= (others => '0');
         bit0_s         <= '0';
         new_bit0_s     <= '0';
+        signal_det_s   <= '0';
       else
         if en_sample0_s = '1' then
-          sample0_s  <= mf_data_d_s;
-          bit0_s     <= not(mf_data_d_s(9));
+          sample0_s    <= mf_data_d_s;
+          bit0_s       <= not(mf_data_d_s(9));
+          signal_det_s <= signal_det_aux_s;
         end if;
         new_bit0_s <= en_sample0_s;
       end if;
     end if;
   end process;
 
-  -- Square law
+  -- Square law and register
   u_sq : process(clk_i)
     variable aux_v : unsigned(19 downto 0);
   begin
@@ -232,31 +252,48 @@ begin
       end if;
     end if;
   end process;
-  signal_det_aux_s <='1' when unsigned(mf_sq_s) > unsigned(det_th_i) else '0';
-  -- Persistent signal detection
-  u_sq_persistent : process (clk_i)
-    variable counter_v   : integer;
-    constant PERSISTENCE : integer := N_PULSE/2;
-  begin
-    if (rising_edge(clk_i)) then
-      if srst_i = '1' then
-        signal_det_s <= '0';
-        counter_v := 0;
-      else
-        if en_i = '1' then
-          if signal_det_aux_s = '1' then
-            signal_det_s <= '1';
-            counter_v := PERSISTENCE;
-          else
-            counter_v := counter_v - 1;
-            if counter_v = 0 then
-              signal_det_s <= '0';
-            end if;
-          end if;
-        end if;
-      end if;
-    end if;
-  end process;
+  -- Moving Average
+  u_moving_average : moving_average
+  generic map (
+    NBIT   => 10,
+    DEPTH  => 16
+  )
+  port map (
+    clk_i        => clk_i,
+    srst_i       => srst_i,
+    en_i         => sr_en_s,
+    data_i       => mf_sq_s,
+    data_o       => mf_sq_ma_s,
+    data_valid_o => open
+  );
+  -- Comparator
+  signal_det_aux_s <='1' when unsigned(mf_sq_ma_s) > unsigned(det_th_i) else '0';
+
+  --signal_det_aux_s <='1' when unsigned(mf_sq_s) > unsigned(det_th_i) else '0';
+  ---- Persistent signal detection
+  --u_sq_persistent : process (clk_i)
+  --  variable counter_v   : integer;
+  --  constant PERSISTENCE : integer := N_PULSE/2;
+  --begin
+  --  if (rising_edge(clk_i)) then
+  --    if srst_i = '1' then
+  --      signal_det_s <= '0';
+  --      counter_v := 0;
+  --    else
+  --      if en_i = '1' then
+  --        if signal_det_aux_s = '1' then
+  --          signal_det_s <= '1';
+  --          counter_v := PERSISTENCE;
+  --        else
+  --          counter_v := counter_v - 1;
+  --          if counter_v = 0 then
+  --            signal_det_s <= '0';
+  --          end if;
+  --        end if;
+  --      end if;
+  --    end if;
+  --  end if;
+  --end process;
 
   -- Control Unit and synchornized bit, sample, counter and data_detection
   u_bit_sample_reg : process(clk_i)
